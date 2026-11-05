@@ -1,6 +1,5 @@
 <?php
 
-//  $usuarioId deve ser o id do usuário logado (usuario.id), pois matricula_id referencia essa coluna na tabela log_usuario.
 function criarAcaoLog(
 	PDO $pdo,
 	string $operacao,
