@@ -1,0 +1,41 @@
+# Environment variables and local credentials
+.env
+.env.*
+!.env.example
+
+# Local database files and backups (keep schema/seed .sql files trackable)
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.dump
+*.bak
+*.backup
+
+# PHP dependencies (Composer)
+/vendor/
+
+# PHP runtime, debug, and log files
+*.log
+*.cache
+.phpunit.cache/
+.phpunit.result.cache
+.php-version
+
+# User-generated uploads; keep the directory placeholder if needed
+/uploads/*
+!/uploads/.gitkeep
+
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Claude Code local settings
+.claude/
+
+# Editors and IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
