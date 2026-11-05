@@ -10,12 +10,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $senha = $_POST['senha'] ?? '';
 
     if (!$email || $senha === '') {
-        header("Location: ./index.html");
+        header("Location: ../index.html");
         exit();
     }
 
     try {
-
         $sql = "SELECT id, nome, email, senha, ativo
                 FROM usuario
                 WHERE email = :email
@@ -41,8 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
 
         } else {
+
             echo "E-mail ou senha incorretos!";
-            echo " <a href='./index.html'>Tentar novamente</a>";
+            echo "<br><a href='../index.html'>Tentar novamente</a>";
+
         }
 
     } catch (PDOException $erro) {
@@ -53,7 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
 } else {
-    header("Location: ./index.html");
+
+    header("Location: ../index.html");
     exit();
+
 }
 ?>
