@@ -16,7 +16,6 @@ $mensagem = $_SESSION['mensagem_usuario'] ?? '';
 unset($_SESSION['mensagem_usuario']);
 $usuarioEdicao = null;
 $pagina = is_string($_GET['pagina'] ?? null) ? $_GET['pagina'] : 'listar';
-$cadastroDisponivel = is_file(__DIR__ . '/CadastrarUsuario.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = filter_var($_POST['id'] ?? '', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
@@ -158,13 +157,9 @@ $usuarios = $consulta->fetchAll();
         case 'cadastrar': ?>
     <section class="edicao">
         <h2>Cadastrar usuário</h2>
-        <p>O cadastro é processado pela implementação da task DER-18, sem alteração dessa funcionalidade nesta task.</p>
-        <?php if (!$cadastroDisponivel): ?>
-            <p class="aviso" role="status">Cadastro indisponível: o arquivo CadastrarUsuario.php da task DER-18 ainda não foi integrado nesta branch.</p>
-        <?php endif; ?>
-        <p class="aviso">Antes de habilitar o cadastro em produção, a task DER-18 precisa ser compatibilizada com o banco embrapa_bd e a tabela usuario. A versão consultada usa sistema.empregados.</p>
+        <p>Preencha os dados para cadastrar um usuário.</p>
         <form method="post" action="CadastrarUsuario.php">
-            <fieldset <?= !$cadastroDisponivel ? 'disabled' : '' ?>>
+            <fieldset>
                 <legend>Dados do usuário</legend>
                 <label for="cadastro-nome">Nome</label>
                 <input id="cadastro-nome" name="nome" minlength="3" maxlength="100" autocomplete="name" required>
