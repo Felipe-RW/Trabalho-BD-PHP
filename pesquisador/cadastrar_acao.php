@@ -1,4 +1,5 @@
 <?php
+require '../includes/conexao.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $categoria = trim($_POST['categoria'] ?? '');
@@ -28,4 +29,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
+include '../includes/header.php';
 ?>
