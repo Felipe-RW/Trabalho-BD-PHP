@@ -1,0 +1,14 @@
+<?php
+require '../includes/conexao.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $stmt = $pdo->prepare('INSERT INTO categoria (nome) VALUES (:nome)');
+    $stmt->execute([
+        ':nome' => $_POST['nome'],
+    ]);
+    header('Location: index.php');
+    exit;
+}
+
+include '../includes/header.php';
+?>
