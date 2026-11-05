@@ -1,5 +1,8 @@
 <?php
+session_start();
+
 require '../includes/conexao.php';
+require '../includes/criar_acao_log.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $categoria = trim($_POST['categoria'] ?? '');
@@ -24,6 +27,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ':data_de_realizacao' => $_POST['data_de_realizacao'],
         ':categoria_id' => (int) $categoria_id,
     ]);
+
+    $acao_id = (int) $pdo->lastInsertId();
+    $usuario_id = (int) $_SESSION['usuario_id'];
+    criarAcaoLog($pdo, 'Cadastro', 'acao', $acao_id, $usuario_id);
 
     header('Location: index.php');
     exit;
