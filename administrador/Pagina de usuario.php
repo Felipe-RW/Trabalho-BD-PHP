@@ -85,14 +85,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $erro = 'Usuário não encontrado.';
     }
 }
-$usuarios = $pdo->query('SELECT id, nome, email, matricula, ativo FROM usuario ORDER BY nome, id')->fetchAll();
+$busca = is_string($_GET['busca'] ?? null) ? trim($_GET['busca']) : '';
+$situacao = is_string($_GET['situacao'] ?? null) ? $_GET['situacao'] : '';
+$sql = 'SELECT id, nome, email, matricula, ativo FROM usuario WHERE 1 = 1';
+$parametros = [];
+if ($busca !== '') {
+    $sql .= ' AND (nome LIKE ? OR email LIKE ? OR CAST(matricula AS CHAR) LIKE ?)';
+    $parametros = array_fill(0, 3, '%' . $busca . '%');
+}
+if (in_array($situacao, ['1', '0'], true)) {
+    $sql .= ' AND ativo = ?';
+    $parametros[] = (int) $situacao;
+}
+$sql .= ' ORDER BY nome, id';
+$consulta = $pdo->prepare($sql);
+$consulta->execute($parametros);
+$usuarios = $consulta->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciar usuários</title>
+    <title>Página de usuários - Admin</title>
     <style>
         * { box-sizing: border-box; }
         body { margin: 0; background: #f2f4f8; color: #222; font-family: Arial, sans-serif; }
@@ -105,6 +120,11 @@ $usuarios = $pdo->query('SELECT id, nome, email, matricula, ativo FROM usuario O
         .erro { background: #f8d7da; }
         .edicao { max-width: 520px; background: white; padding: 24px; border-radius: 8px; margin-bottom: 28px; }
         label { display: block; margin: 16px 0 6px; font-weight: bold; }
+        select { padding: 10px; border: 1px solid #aaa; border-radius: 4px; background: white; }
+        .filtros { display: flex; gap: 12px; align-items: end; flex-wrap: wrap; margin-bottom: 20px; }
+        .filtros .campo { flex: 1 1 200px; }
+        .filtros select { width: 100%; }
+        .situacao { font-weight: bold; }
         input { width: 100%; padding: 10px; border: 1px solid #aaa; border-radius: 4px; }
         button, .botao { display: inline-block; border: 0; border-radius: 4px; padding: 10px 14px; background: #1f3a5f; color: white; font: inherit; text-decoration: none; cursor: pointer; }
         .desativar { background: #a3212c; }
@@ -123,7 +143,7 @@ $usuarios = $pdo->query('SELECT id, nome, email, matricula, ativo FROM usuario O
     </style>
 </head>
 <body>
-<header><h1>Gerenciar usuários</h1></header>
+<header><h1>Página de usuários — Admin</h1></header>
 <main>
     <p>Página de usuários do administrador. O ID é gerado automaticamente pelo banco e não pode ser alterado.</p>
     <nav aria-label="Gerenciamento de usuários">
@@ -184,6 +204,23 @@ $usuarios = $pdo->query('SELECT id, nome, email, matricula, ativo FROM usuario O
     <?php endif; ?>
 
     <h2>Usuários</h2>
+    <p>Selecione Editar para atualizar os dados ou Desativar para tornar o usuário inativo, sem excluir seu registro.</p>
+    <form class="filtros" method="get" action="Pagina%20de%20usuario.php">
+        <div class="campo">
+            <label for="busca">Buscar por nome, e-mail ou matrícula</label>
+            <input type="search" id="busca" name="busca" value="<?= escapar($busca) ?>">
+        </div>
+        <div class="campo">
+            <label for="situacao">Situação</label>
+            <select id="situacao" name="situacao">
+                <option value="">Todos</option>
+                <option value="1" <?= $situacao === '1' ? 'selected' : '' ?>>Ativos</option>
+                <option value="0" <?= $situacao === '0' ? 'selected' : '' ?>>Desativados</option>
+            </select>
+        </div>
+        <button type="submit">Filtrar</button>
+        <a href="Pagina%20de%20usuario.php">Limpar filtros</a>
+    </form>
     <div class="tabela">
     <table>
         <thead><tr><th>Nome</th><th>E-mail</th><th>Matrícula</th><th>Situação</th><th>Ações</th></tr></thead>
@@ -193,7 +230,7 @@ $usuarios = $pdo->query('SELECT id, nome, email, matricula, ativo FROM usuario O
                 <td><?= escapar($usuario['nome']) ?></td>
                 <td><?= escapar($usuario['email']) ?></td>
                 <td><?= escapar($usuario['matricula']) ?></td>
-                <td><?= $usuario['ativo'] ? 'Ativo' : 'Inativo' ?></td>
+                <td class="situacao"><?= $usuario['ativo'] ? 'Ativo (1)' : 'Desativado (0)' ?></td>
                 <td><div class="acoes">
                     <a class="botao" href="?editar=<?= escapar($usuario['id']) ?>">Editar</a>
                     <?php if ($usuario['ativo']): ?>
@@ -207,7 +244,7 @@ $usuarios = $pdo->query('SELECT id, nome, email, matricula, ativo FROM usuario O
                 </div></td>
             </tr>
         <?php endforeach; ?>
-        <?php if (!$usuarios): ?><tr><td colspan="5">Nenhum usuário cadastrado.</td></tr><?php endif; ?>
+        <?php if (!$usuarios): ?><tr><td colspan="5">Nenhum usuário encontrado. Se o banco acabou de ser criado, a lista ficará vazia até o primeiro cadastro.</td></tr><?php endif; ?>
         </tbody>
     </table>
     </div>
