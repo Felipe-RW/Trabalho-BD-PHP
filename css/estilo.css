@@ -96,13 +96,20 @@ label {
     font-weight: bold;
 }
 
-input, select {
+input, select, textarea {
     width: 100%;
     padding: 10px;
     margin-bottom: 16px;
     border: 1px solid #bbb;
     border-radius: 4px;
     font-size: 15px;
+    font-family: inherit;
+}
+
+#motivo_rejeicao {
+    height: 120px;
+    max-width: 100%;
+    resize: none;
 }
 
 .btn {
