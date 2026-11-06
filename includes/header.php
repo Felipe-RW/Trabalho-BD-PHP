@@ -1,20 +1,24 @@
-<!-- <!DOCTYPE html>
+<?php
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
+$inicioUrl = '/Trabalho-BD-PHP/escolher_cargo.php';
+?>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Locadora</title>
-    <link rel="stylesheet" href="/locadora/css/estilo.css">
+    <title>Banco de Dados Embrapa</title>
+    <link rel="stylesheet" href="/Trabalho-BD-PHP/css/estilo.css">
 </head>
 <body>
     <header>
-        <h1>Locadora</h1>
+        <h1>Embrapa</h1>
         <nav>
-            <a href="/locadora/index.html">Início</a>
-            <a href="/locadora/clientes/index.php">Clientes</a>
-            <a href="/locadora/categorias/index.php">Categorias</a>
-            <a href="/locadora/filmes/index.php">Filmes</a>
-            <a href="/locadora/locacoes/index.php">Locações</a>
+            <a href="<?= htmlspecialchars($inicioUrl, ENT_QUOTES, 'UTF-8') ?>">Início</a>
+            <a class="btn btn-pequeno btn-perigo" href="/Trabalho-BD-PHP/includes/logout.php">Sair</a>
         </nav>
     </header>
-    <main> -->
+    <main>

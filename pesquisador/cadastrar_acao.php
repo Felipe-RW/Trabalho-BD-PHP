@@ -7,7 +7,7 @@ require '../includes/criar_acao_log.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $categoria = trim($_POST['categoria'] ?? '');
 
-    $busca_id = $pdo->prepare(
+    $busca_id = $conexao->prepare(
         'SELECT id FROM categoria WHERE nome = :categoria'
     );
     $busca_id->execute([':categoria' => $categoria]);
@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         throw new Exception('Categoria não encontrada.');
     }
 
-    $stmt = $pdo->prepare(
+    $stmt = $conexao->prepare(
         'INSERT INTO acao (titulo, descricao, data_de_realizacao, categoria_id)
          VALUES (:titulo, :descricao, :data_de_realizacao, :categoria_id)'
     );
@@ -28,9 +28,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ':categoria_id' => (int) $categoria_id,
     ]);
 
-    $acao_id = (int) $pdo->lastInsertId();
+    $acao_id = (int) $conexao->lastInsertId();
     $usuario_id = (int) $_SESSION['usuario_id'];
-    criarAcaoLog($pdo, 'Cadastro', 'acao', $acao_id, $usuario_id);
+    criarAcaoLog($conexao, 'Cadastro', 'acao', $acao_id, $usuario_id);
 
     header('Location: index.php');
     exit;
@@ -38,3 +38,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 include '../includes/header.php';
 ?>
+<h2>Cadastro de ação</h2>
+<?php include '../includes/footer.php'; ?>

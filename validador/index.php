@@ -12,19 +12,10 @@ $stmt = $conexao->query(
 $acoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Ações para validação</title>
-	<link rel="stylesheet" href="../css/estilo.css">
-</head>
-<body>
-	<main>
-		<div class="topo">
-			<h2>Ações para validação</h2>
-		</div>
+<?php include '../includes/header.php'; ?>
+	<div class="topo">
+		<h2>Ações para validação</h2>
+	</div>
 
 		<table>
 			<thead>
@@ -51,12 +42,10 @@ $acoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 						<td><?= htmlspecialchars($acao['categoria'], ENT_QUOTES, 'UTF-8') ?></td>
 						<td><?= htmlspecialchars($acao['status_acao'], ENT_QUOTES, 'UTF-8') ?></td>
 						<td>
-							<a class="btn btn-pequeno" href="validar_acao_teste.php?id=<?= (int) $acao['id'] ?>">Validar</a>
+							<a class="btn btn-pequeno" href="validar_acao.php?id=<?= (int) $acao['id'] ?>">Validar</a>
 						</td>
 					</tr>
 				<?php endforeach; ?>
 			</tbody>
 		</table>
-	</main>
-</body>
-</html>
+<?php include '../includes/footer.php'; ?>
