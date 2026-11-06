@@ -156,3 +156,40 @@ input, select {
     margin-bottom: 40px;
 }
 
+.btn_administrador {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.h1_administrador {
+    display: flex;
+    justify-content: center;
+}
+
+.menu_administrador {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.painel_administrador {
+    display: flex;
+    width: 100%;
+    max-width: 800px;
+    height: 100%;
+    padding: 40px;
+    min-height: 220px;
+    margin-top: 30px;
+}
+
+.btn_adm {
+    display: flex;
+    width: 100%;
+    max-width: 200px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+}
