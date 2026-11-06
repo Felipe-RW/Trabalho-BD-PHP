@@ -1,4 +1,4 @@
-/* * { box-sizing: border-box; margin: 0; padding: 0; }
+*{ box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
     font-family: Arial, sans-serif;
@@ -96,13 +96,20 @@ label {
     font-weight: bold;
 }
 
-input, select {
+input, select, textarea {
     width: 100%;
     padding: 10px;
     margin-bottom: 16px;
     border: 1px solid #bbb;
     border-radius: 4px;
     font-size: 15px;
+    font-family: inherit;
+}
+
+#motivo_rejeicao {
+    height: 120px;
+    max-width: 100%;
+    resize: none;
 }
 
 .btn {
@@ -136,6 +143,23 @@ input, select {
     padding: 12px;
     border-radius: 4px;
     margin-bottom: 16px;
-} */
+}
 
+.formulario_login {
+    width: 100%;
+    max-width: 800px;
+    height: 100%;
+    padding: 40px;
+    min-height: 400px;
+}
+
+.btn_login {
+    width: 100%;
+    max-width: 200px;
+    margin-top: 80px;
+}
+
+.campo_email {
+    margin-bottom: 40px;
+}
 

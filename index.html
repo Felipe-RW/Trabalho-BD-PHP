@@ -1,33 +1,43 @@
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Locadora</title>
+    <title>Banco de Dados Embrapa</title>
     <link rel="stylesheet" href="css/estilo.css">
 </head>
 <body>
     <header>
-        <h1>Locadora</h1>
-        <nav>
-            <a href="index.html">Início</a>
-            <a href="clientes/index.php">Clientes</a>
-            <a href="categorias/index.php">Categorias</a>
-            <a href="filmes/index.php">Filmes</a>
-            <a href="locacoes/index.php">Locações</a>
-        </nav>
+        <h1>Embrapa</h1>
     </header>
     <main>
-        <h2>Menu principal</h2>
-        <div class="cards">
-            <a class="card" href="clientes/index.php">Clientes</a>
-            <a class="card" href="categorias/index.php">Categorias</a>
-            <a class="card" href="filmes/index.php">Filmes</a>
-            <a class="card" href="locacoes/index.php">Locações</a>
+        <h2>Login</h2>
+        <div class="frame_login">
+            <div class="login_texto">
+                <h1>Bem-vindo!</h1>
+                <br><p>Preencha as informações para efetutar o login:</p><br>
+
+                <form class="formulario_login" action="includes/autenticacao.php" method="POST">
+
+                    <div class="campo_email">
+                        <label for="email">Seu E-mail:</label>
+                        <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
+                    </div>
+
+                    <div>
+                        <label for="senha">Sua Senha:</label>
+                        <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+                    </div>
+
+                    <button class="btn btn_login" type="submit">Entrar</button>
+
+                </form>
+
+            </div>
         </div>
     </main>
     <footer>
         <p>Projeto de Banco de Dados</p>
     </footer>
 </body>
-</html> -->
+</html>
