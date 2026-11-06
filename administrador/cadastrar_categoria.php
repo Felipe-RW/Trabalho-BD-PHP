@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ]);
 
     $categoriaId = (int) $conexao->lastInsertId();
-    $usuarioId = (int) $_SESSION['usuario_id']; // Use your actual session key
+    $usuarioId = (int) $_SESSION['usuario_id'];
 
     criarAcaoLog($conexao, 'Cadastro', 'categoria', $categoriaId, $usuarioId);
 
@@ -21,3 +21,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 include '../includes/header.php';
 ?>
+
+<section class="categoria-pagina">
+    <div class="categoria-titulo">
+        <h2>Cadastrar categoria</h2>
+    </div>
+
+    <form method="post" action="cadastrar_categoria.php">
+        <label for="nome">Nome da categoria:</label>
+        <input type="text" id="nome" name="nome" maxlength="100" required>
+
+        <div class="categoria-acoes">
+            <button class="btn" type="submit">Cadastrar</button>
+            <a class="btn" href="index.php">Voltar ao painel do Administrador</a>
+        </div>
+    </form>
+</section>
+
+<?php include '../includes/footer.php'; ?>
