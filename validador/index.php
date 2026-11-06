@@ -6,8 +6,10 @@ $stmt = $conexao->query(
 			a.status_acao, c.nome AS categoria
 	 FROM acao a
 	 JOIN categoria c ON c.id = a.categoria_id
+	 WHERE a.status_acao = \'Em Avaliação\'
 	 ORDER BY a.id DESC'
 );
+$acoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -20,19 +22,41 @@ $stmt = $conexao->query(
 </head>
 <body>
 	<main>
-		<h2>Ações</h2>
+		<div class="topo">
+			<h2>Ações para validação</h2>
+		</div>
 
-		<ul>
-			<?php while ($acao = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
-				<li>
-					<a href="validar_acao_teste.php?id=<?= (int) $acao['id'] ?>">
-						<?= htmlspecialchars($acao['titulo'], ENT_QUOTES, 'UTF-8') ?>
-					</a>
-					— <?= htmlspecialchars($acao['categoria'], ENT_QUOTES, 'UTF-8') ?>
-					(<?= htmlspecialchars($acao['status_acao'], ENT_QUOTES, 'UTF-8') ?>)
-				</li>
-			<?php endwhile; ?>
-		</ul>
+		<table>
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Título</th>
+					<th>Descrição</th>
+					<th>Data de realização</th>
+					<th>Categoria</th>
+					<th>Status</th>
+					<th>Ações</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php if (count($acoes) === 0): ?>
+					<tr><td colspan="7">Nenhuma ação encontrada para validação.</td></tr>
+				<?php endif; ?>
+				<?php foreach ($acoes as $acao): ?>
+					<tr>
+						<td><?= (int) $acao['id'] ?></td>
+						<td><?= htmlspecialchars($acao['titulo'], ENT_QUOTES, 'UTF-8') ?></td>
+						<td><?= htmlspecialchars($acao['descricao'], ENT_QUOTES, 'UTF-8') ?></td>
+						<td><?= htmlspecialchars($acao['data_de_realizacao'], ENT_QUOTES, 'UTF-8') ?></td>
+						<td><?= htmlspecialchars($acao['categoria'], ENT_QUOTES, 'UTF-8') ?></td>
+						<td><?= htmlspecialchars($acao['status_acao'], ENT_QUOTES, 'UTF-8') ?></td>
+						<td>
+							<a class="btn btn-pequeno" href="validar_acao_teste.php?id=<?= (int) $acao['id'] ?>">Validar</a>
+						</td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
 	</main>
 </body>
 </html>
