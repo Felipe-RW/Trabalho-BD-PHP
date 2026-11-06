@@ -38,3 +38,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 include '../includes/header.php';
 ?>
+<h2>Cadastro de ação</h2>
+<?php include '../includes/footer.php'; ?>

@@ -6,7 +6,7 @@ $_SESSION = [];
 
 session_destroy();
 
-header("Location: ../index.html");
+header('Location: /Trabalho-BD-PHP/index.html');
 exit();
 
 ?>
