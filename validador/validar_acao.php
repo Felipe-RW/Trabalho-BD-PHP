@@ -69,7 +69,7 @@ if ($metodo === 'POST') {
         criarAcaoLog($conexao, $status, 'validacao', $acaoId, $usuarioId);
 
         $conexao->commit();
-        header('Location: validar_acao_com_login.php?id=' . $acaoId . '&salvo=1');
+        header('Location: validar_acao.php?id=' . $acaoId . '&salvo=1');
         exit;
     } catch (Throwable $e) {
         if ($conexao->inTransaction()) {
@@ -111,34 +111,57 @@ $motivoAtual = $validacaoAtual->fetchColumn();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Validar ação</title>
+    <link rel="stylesheet" href="../css/estilo.css">
 </head>
 <body>
-    <h1><?= htmlspecialchars($acao['titulo'], ENT_QUOTES, 'UTF-8') ?></h1>
+    <main>
+        <div class="topo">
+            <h2>Validar ação</h2>
+            <a class="btn" href="index.php">Voltar à lista</a>
+        </div>
 
-    <?php if (isset($_GET['salvo'])): ?>
-        <p>Validação salva com sucesso.</p>
-    <?php endif; ?>
+        <?php if (isset($_GET['salvo'])): ?>
+            <p class="aviso">Validação salva com sucesso.</p>
+        <?php endif; ?>
 
-    <?php if ($erro !== null): ?>
-        <p role="alert"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></p>
-    <?php endif; ?>
+        <?php if ($erro !== null): ?>
+            <p class="aviso" role="alert"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></p>
+        <?php endif; ?>
 
-    <p><strong>Categoria:</strong> <?= htmlspecialchars($acao['categoria'], ENT_QUOTES, 'UTF-8') ?></p>
-    <p><strong>Descrição:</strong><br><?= nl2br(htmlspecialchars($acao['descricao'], ENT_QUOTES, 'UTF-8')) ?></p>
-    <p><strong>Data de realização:</strong> <?= htmlspecialchars($acao['data_de_realizacao'], ENT_QUOTES, 'UTF-8') ?></p>
-    <p><strong>Status atual:</strong> <?= htmlspecialchars($acao['status_acao'], ENT_QUOTES, 'UTF-8') ?></p>
+        <table>
+            <tbody>
+                <tr>
+                    <th scope="row">Título</th>
+                    <td><?= htmlspecialchars($acao['titulo'], ENT_QUOTES, 'UTF-8') ?></td>
+                </tr>
+                <tr>
+                    <th scope="row">Categoria</th>
+                    <td><?= htmlspecialchars($acao['categoria'], ENT_QUOTES, 'UTF-8') ?></td>
+                </tr>
+                <tr>
+                    <th scope="row">Descrição</th>
+                    <td><?= nl2br(htmlspecialchars($acao['descricao'], ENT_QUOTES, 'UTF-8')) ?></td>
+                </tr>
+                <tr>
+                    <th scope="row">Data de realização</th>
+                    <td><?= htmlspecialchars($acao['data_de_realizacao'], ENT_QUOTES, 'UTF-8') ?></td>
+                </tr>
+                <tr>
+                    <th scope="row">Status atual</th>
+                    <td><?= htmlspecialchars($acao['status_acao'], ENT_QUOTES, 'UTF-8') ?></td>
+                </tr>
+            </tbody>
+        </table>
 
-    <form method="post" action="validar_acao_com_login.php">
-        <input type="hidden" name="id" value="<?= (int) $acao['id'] ?>">
+        <form method="post" action="validar_acao.php">
+            <input type="hidden" name="id" value="<?= (int) $acao['id'] ?>">
 
-        <label for="motivo_rejeicao">Motivo (opcional):</label><br>
-        <textarea id="motivo_rejeicao" name="motivo_rejeicao" rows="4" cols="50"><?= htmlspecialchars((string) $motivoAtual, ENT_QUOTES, 'UTF-8') ?></textarea>
-        <br>
+            <label for="motivo_rejeicao">Motivo (opcional):</label>
+            <textarea id="motivo_rejeicao" name="motivo_rejeicao" rows="4"><?= htmlspecialchars((string) $motivoAtual, ENT_QUOTES, 'UTF-8') ?></textarea>
 
-        <button type="submit" name="decisao" value="Aprovado">Aprovar</button>
-        <button type="submit" name="decisao" value="Negado">Negar</button>
-    </form>
-
-    <p><a href="index.php">Voltar à lista</a></p>
+            <button class="btn" type="submit" name="decisao" value="Aprovado">Aprovar</button>
+            <button class="btn btn-perigo" type="submit" name="decisao" value="Negado">Negar</button>
+        </form>
+    </main>
 </body>
 </html>

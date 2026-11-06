@@ -51,7 +51,7 @@ $acoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 						<td><?= htmlspecialchars($acao['categoria'], ENT_QUOTES, 'UTF-8') ?></td>
 						<td><?= htmlspecialchars($acao['status_acao'], ENT_QUOTES, 'UTF-8') ?></td>
 						<td>
-							<a class="btn btn-pequeno" href="validar_acao_teste.php?id=<?= (int) $acao['id'] ?>">Validar</a>
+							<a class="btn btn-pequeno" href="validar_acao.php?id=<?= (int) $acao['id'] ?>">Validar</a>
 						</td>
 					</tr>
 				<?php endforeach; ?>
