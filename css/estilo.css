@@ -215,6 +215,56 @@ input, select, textarea {
     flex-wrap: wrap;
 }
 
+.cadastro-usuario-pagina {
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+.cadastro-usuario-titulo {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.cadastro-usuario-pagina form {
+    margin: 0 auto;
+}
+
+.cadastro-usuario-pagina fieldset {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 8px 16px;
+    margin: 8px 0 20px;
+    padding: 16px;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+}
+
+.cadastro-usuario-pagina fieldset legend {
+    padding: 0 6px;
+    font-weight: bold;
+}
+
+.cadastro-usuario-pagina .cargo-opcao {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-weight: normal;
+}
+
+.cadastro-usuario-pagina .cargo-opcao input {
+    width: auto;
+    margin: 0;
+}
+
+.cadastro-usuario-acoes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
 .aviso {
     background: #fff3cd;
     padding: 12px;

@@ -3,34 +3,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
-$inicioUrl = '/Trabalho-BD-PHP/index.html';
-$usuarioId = (int) ($_SESSION['usuario_id'] ?? $_SESSION['id'] ?? 0);
-
-if ($usuarioId > 0) {
-    require_once __DIR__ . '/conexao.php';
-
-    $consultaCargo = $conexao->prepare(
-        'SELECT c.titulo
-         FROM usuario_cargo uc
-         JOIN cargo c ON c.id = uc.cargo_id
-         WHERE uc.usuario_id = :usuario_id
-         ORDER BY c.id
-         LIMIT 1'
-    );
-    $consultaCargo->execute([':usuario_id' => $usuarioId]);
-    $cargoAtual = $consultaCargo->fetchColumn();
-
-    $destinosPorCargo = [
-        'Pesquisador' => '/Trabalho-BD-PHP/pesquisador/index.php',
-        'Validador' => '/Trabalho-BD-PHP/validador/index.php',
-        'Comitê' => '/Trabalho-BD-PHP/comite/index.php',
-        'Administrador' => '/Trabalho-BD-PHP/administrador/index.php',
-    ];
-
-    if (isset($destinosPorCargo[$cargoAtual])) {
-        $inicioUrl = $destinosPorCargo[$cargoAtual];
-    }
-}
+$inicioUrl = '/Trabalho-BD-PHP/escolher_cargo.php';
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
