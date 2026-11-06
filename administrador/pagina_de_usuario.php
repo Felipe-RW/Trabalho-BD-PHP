@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $comando = $pdo->prepare('UPDATE usuario SET ativo = 0 WHERE id = ?');
             $comando->execute([$id]);
             $_SESSION['mensagem_usuario'] = 'Usuário desativado com sucesso.';
-            header('Location: Pagina%20de%20usuario.php');
+            header('Location: pagina_de_usuario.php');
             exit;
 
             case 'editar':
@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $comando = $pdo->prepare('UPDATE usuario SET nome = ?, email = ?, matricula = ? WHERE id = ?');
                     $comando->execute([$nome, $email, $matricula, $id]);
                     $_SESSION['mensagem_usuario'] = 'Usuário atualizado com sucesso.';
-                    header('Location: Pagina%20de%20usuario.php');
+                    header('Location: pagina_de_usuario.php');
                     exit;
                 } catch (PDOException $e) {
                     if (($e->errorInfo[1] ?? null) === 1062) {
@@ -146,8 +146,9 @@ $usuarios = $consulta->fetchAll();
 <main>
     <p>Página de usuários do administrador. O ID é gerado automaticamente pelo banco e não pode ser alterado.</p>
     <nav aria-label="Gerenciamento de usuários">
-        <a class="botao" href="Pagina%20de%20usuario.php" <?= $pagina !== 'cadastrar' ? 'aria-current="page"' : '' ?>>Listar, editar e desativar</a>
+        <a class="botao" href="pagina_de_usuario.php" <?= $pagina !== 'cadastrar' ? 'aria-current="page"' : '' ?>>Listar, editar e desativar</a>
         <a class="botao" href="?pagina=cadastrar" <?= $pagina === 'cadastrar' ? 'aria-current="page"' : '' ?>>Cadastrar usuário</a>
+        <a class="botao" href="visualizar_usuarios.php">Somente visualização</a>
     </nav>
     <p class="aviso">Ambiente de desenvolvimento: esta página ainda não possui controle de acesso. Não a disponibilize publicamente antes de integrar o login de administrador.</p>
     <?php if ($mensagem): ?><p class="sucesso" role="status"><?= escapar($mensagem) ?></p><?php endif; ?>
@@ -158,7 +159,7 @@ $usuarios = $consulta->fetchAll();
     <section class="edicao">
         <h2>Cadastrar usuário</h2>
         <p>Preencha os dados para cadastrar um usuário.</p>
-        <form method="post" action="CadastrarUsuario.php">
+        <form method="post" action="cadastrar_usuario.php">
             <fieldset>
                 <legend>Dados do usuário</legend>
                 <label for="cadastro-nome">Nome</label>
@@ -175,7 +176,7 @@ $usuarios = $consulta->fetchAll();
                 </fieldset>
                 <button type="submit">Cadastrar usuário</button>
             </fieldset>
-            <a href="Pagina%20de%20usuario.php">Voltar à lista</a>
+            <a href="pagina_de_usuario.php">Voltar à lista</a>
         </form>
     </section>
     <?php break;
@@ -183,7 +184,7 @@ $usuarios = $consulta->fetchAll();
     <?php if ($usuarioEdicao): ?>
     <section class="edicao">
         <h2>Editar usuário</h2>
-        <form method="post" action="Pagina%20de%20usuario.php">
+        <form method="post" action="pagina_de_usuario.php">
             <input type="hidden" name="csrf" value="<?= escapar($_SESSION['csrf']) ?>">
             <input type="hidden" name="acao" value="editar">
             <input type="hidden" name="id" value="<?= escapar($usuarioEdicao['id']) ?>">
@@ -193,14 +194,14 @@ $usuarios = $consulta->fetchAll();
             <input id="email" name="email" type="email" maxlength="100" value="<?= escapar($usuarioEdicao['email']) ?>" required>
             <label for="matricula">Matrícula</label>
             <input id="matricula" name="matricula" type="number" min="1" max="2147483647" step="1" value="<?= escapar($usuarioEdicao['matricula']) ?>" required>
-            <div class="acoes"><button type="submit">Salvar alterações</button><a href="Pagina%20de%20usuario.php">Cancelar</a></div>
+            <div class="acoes"><button type="submit">Salvar alterações</button><a href="pagina_de_usuario.php">Cancelar</a></div>
         </form>
     </section>
     <?php endif; ?>
 
     <h2>Usuários</h2>
     <p>Selecione Editar para atualizar os dados ou Desativar para tornar o usuário inativo, sem excluir seu registro.</p>
-    <form class="filtros" method="get" action="Pagina%20de%20usuario.php">
+    <form class="filtros" method="get" action="pagina_de_usuario.php">
         <div class="campo">
             <label for="busca">Buscar por nome, e-mail ou matrícula</label>
             <input type="search" id="busca" name="busca" value="<?= escapar($busca) ?>">
@@ -214,7 +215,7 @@ $usuarios = $consulta->fetchAll();
             </select>
         </div>
         <button type="submit">Filtrar</button>
-        <a href="Pagina%20de%20usuario.php">Limpar filtros</a>
+        <a href="pagina_de_usuario.php">Limpar filtros</a>
     </form>
     <div class="tabela">
     <table>
@@ -229,7 +230,7 @@ $usuarios = $consulta->fetchAll();
                 <td><div class="acoes">
                     <a class="botao" href="?editar=<?= escapar($usuario['id']) ?>">Editar</a>
                     <?php if ($usuario['ativo']): ?>
-                    <form method="post" action="Pagina%20de%20usuario.php" onsubmit="return confirm('Deseja realmente desativar este usuário?');">
+                    <form method="post" action="pagina_de_usuario.php" onsubmit="return confirm('Deseja realmente desativar este usuário?');">
                         <input type="hidden" name="csrf" value="<?= escapar($_SESSION['csrf']) ?>">
                         <input type="hidden" name="acao" value="desativar">
                         <input type="hidden" name="id" value="<?= escapar($usuario['id']) ?>">
