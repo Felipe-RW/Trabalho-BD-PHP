@@ -1,6 +1,22 @@
 
-<?php include '../includes/header.php';
-require'../includes/conexao.php';
+<?php
+include '../includes/header.php';
+require '../includes/conexao.php';
+
+$sql = "SELECT
+            u.id,
+            u.nome,
+            u.email,
+            u.matricula,
+            c.titulo AS cargo
+        FROM usuario u
+        INNER JOIN usuario_cargo uc
+            ON u.id = uc.usuario_id
+        INNER JOIN cargo c
+            ON uc.cargo_id = c.id
+        WHERE c.titulo = 'Comitê'
+        AND u.ativo = 1
+        ORDER BY u.nome ASC";
 
 $resultado = $pdo->query($sql);
 ?>
