@@ -193,6 +193,28 @@ input, select, textarea {
 
 .topo h2 { margin: 0; }
 
+.categoria-pagina {
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+.categoria-titulo {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.categoria-pagina form {
+    margin: 0 auto;
+}
+
+.categoria-acoes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
 .aviso {
     background: #fff3cd;
     padding: 12px;
