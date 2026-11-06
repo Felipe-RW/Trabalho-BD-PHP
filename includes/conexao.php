@@ -1,26 +1,16 @@
 <?php
-
-$host = "localhost";
-$banco = "embrapa_bd";
-$usuario = "root";
-$senhaBanco = "";
+$host = 'localhost';
+$banco = 'embrapa_bd';
+$usuario = 'root';
+$senha = '';
 
 try {
-
-    $conexao = new PDO(
-        "mysql:host=$host;dbname=$banco;charset=utf8mb4",
-        $usuario,
-        $senhaBanco
-    );
-
-    $conexao->setAttribute(
-        PDO::ATTR_ERRMODE,
-        PDO::ERRMODE_EXCEPTION
-    );
-
+    $conexao = new PDO("mysql:host=$host;dbname=$banco;charset=utf8mb4", $usuario, $senha);
+    $conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $conexao->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-} catch (PDOException $erro) {
-    die("Erro ao conectar: " . $erro->getMessage());
+} catch (PDOException $e) {
+    error_log($e->getMessage());
+    die('Erro na conexão com o banco de dados.');
 }
 ?>

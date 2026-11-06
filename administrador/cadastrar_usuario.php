@@ -14,8 +14,8 @@ $nome = $email = $matricula = '';
 $cargosSelecionados = [];
 
 // [id => titulo]
-$cargos = $pdo->query('SELECT id, titulo FROM cargo ORDER BY titulo')
-              ->fetchAll(PDO::FETCH_KEY_PAIR);
+$cargos = $conexao->query('SELECT id, titulo FROM cargo ORDER BY titulo')
+                  ->fetchAll(PDO::FETCH_KEY_PAIR);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -51,9 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!$erros) {
         try {
-            $pdo->beginTransaction();
+            $conexao->beginTransaction();
 
-            $stmt = $pdo->prepare(
+            $stmt = $conexao->prepare(
                 'INSERT INTO usuario (nome, email, senha, matricula)
                  VALUES (:nome, :email, :senha, :matricula)'
             );
@@ -64,9 +64,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':matricula' => (int) $matricula
             ]);
 
-            $novo_usuario_id = (int) $pdo->lastInsertId();
+            $novo_usuario_id = (int) $conexao->lastInsertId();
 
-            $stmtCargo = $pdo->prepare(
+            $stmtCargo = $conexao->prepare(
                 'INSERT INTO usuario_cargo (usuario_id, cargo_id)
                  VALUES (:usuario_id, :cargo_id)'
             );
@@ -78,21 +78,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             criarAcaoLog(
-                $pdo,
+                $conexao,
                 'Cadastro',
                 'usuario',
                 $novo_usuario_id,
                 (int) $_SESSION['usuario_id']
             );
 
-            $pdo->commit();
+            $conexao->commit();
 
             header('Location: index.php');
             exit;
 
         } catch (PDOException $ex) {
-            if ($pdo->inTransaction()) {
-                $pdo->rollBack();
+            if ($conexao->inTransaction()) {
+                $conexao->rollBack();
             }
 
             $erros[] = $ex->getCode() === '23000'
@@ -102,14 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Cadastrar Usuário</title>
-</head>
-<body>
+<?php include '../includes/header.php'; ?>
     <h1>Cadastrar Usuário</h1>
 
     <?php if ($erros): ?>
@@ -151,5 +144,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <button type="submit">Cadastrar</button>
         <a href="index.php">Cancelar</a>
     </form>
-</body>
-</html>
+<?php include '../includes/footer.php'; ?>
