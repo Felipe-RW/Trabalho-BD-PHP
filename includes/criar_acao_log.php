@@ -1,13 +1,13 @@
 <?php
 
 function criarAcaoLog(
-	PDO $pdo,
+	PDO $conexao,
 	string $operacao,
 	string $tabelaAfetada,
 	int $idRegistrado,
 	int $usuarioId
 ): void {
-	$stmt = $pdo->prepare(
+	$stmt = $conexao->prepare(
 		'INSERT INTO log_usuario
 			(operacao, tabela_afetada, id_registrado, data_hora, matricula_id)
 		 VALUES
