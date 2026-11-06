@@ -35,15 +35,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     );
 
     if (mb_strlen($nome) < 3) {
-        $erros[] = 'Informe o nome do empregado.';
+        $erros[] = 'informe o nome do empregado.';
     }
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $erros[] = 'Informe um e-mail válido.';
+        $erros[] = 'informe um e-mail válido.';
     }
 
     if ($matricula === '') {
-        $erros[] = 'Informe a matrícula.';
+        $erros[] = 'informe a matrícula.';
     }
 
     if (!$funcoes) {
