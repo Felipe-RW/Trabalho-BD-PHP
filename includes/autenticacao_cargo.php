@@ -47,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $_SESSION["cargos"] = $cargos;
 
-        header("Location: ../escolher_cargo.php");
+        header("Location: ../ escolher_cargo.php");
         exit();
 
     } else {
