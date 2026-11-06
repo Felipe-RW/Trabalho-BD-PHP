@@ -18,7 +18,7 @@ try {
         PDO::ERRMODE_EXCEPTION
     );
 
-    echo "Conexão realizada com sucesso!";
+    $conexao->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 } catch (PDOException $erro) {
     die("Erro ao conectar: " . $erro->getMessage());
