@@ -1,90 +1,155 @@
-
 <?php
 session_start();
 
-require_once __DIR__ . '/../includes/conexao.php';
-require_once __DIR__ . '/../includes/criar_acao_log.php';
-
-$erros = [];
-$nome = $email = $matricula = '';
-$funcoes = [];
-
-$opcoes = [
-    'Pesquisador',
-    'Validador',
-    'Comitê',
-    'Administrador'
-];
+require '../includes/conexao.php';
+require '../includes/criar_acao_log.php';
 
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: ../login.php');
     exit;
 }
 
+$erros = [];
+$nome = $email = $matricula = '';
+$cargosSelecionados = [];
+
+// [id => titulo]
+$cargos = $pdo->query('SELECT id, titulo FROM cargo ORDER BY titulo')
+              ->fetchAll(PDO::FETCH_KEY_PAIR);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $nome = trim($_POST['nome'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $matricula = trim($_POST['matricula'] ?? '');
+    $senha = $_POST['senha'] ?? '';
 
-    $funcoes = array_values(
-        array_intersect(
-            $opcoes,
-            (array) ($_POST['funcoes'] ?? [])
-        )
-    );
+    $cargosSelecionados = array_values(array_filter(
+        array_map('intval', (array) ($_POST['cargos'] ?? [])),
+        fn($id) => isset($cargos[$id])
+    ));
 
     if (mb_strlen($nome) < 3) {
-        $erros[] = 'informe o nome do empregado.';
+        $erros[] = 'Informe o nome do usuário.';
     }
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $erros[] = 'informe um e-mail válido.';
+        $erros[] = 'Informe um e-mail válido.';
     }
 
-    if ($matricula === '') {
-        $erros[] = 'informe a matrícula.';
+    if (!ctype_digit($matricula)) {
+        $erros[] = 'A matrícula deve conter apenas números.';
     }
 
-    if (!$funcoes) {
-        $erros[] = 'Selecione pelo menos um tipo de função.';
+    if ($senha === '') {
+        $erros[] = 'Informe a senha.';
+    }
+
+    if (!$cargosSelecionados) {
+        $erros[] = 'Selecione pelo menos um cargo.';
     }
 
     if (!$erros) {
         try {
+            $pdo->beginTransaction();
 
             $stmt = $pdo->prepare(
-                'INSERT INTO empregados (nome, email, matricula, funcoes)
-                 VALUES (:nome, :email, :matricula, :funcoes)'
+                'INSERT INTO usuario (nome, email, senha, matricula)
+                 VALUES (:nome, :email, :senha, :matricula)'
             );
-
             $stmt->execute([
                 ':nome' => $nome,
                 ':email' => strtolower($email),
-                ':matricula' => $matricula,
-                ':funcoes' => implode(',', $funcoes)
+                ':senha' => $senha,
+                ':matricula' => (int) $matricula
             ]);
 
-            $empregado_id = (int) $pdo->lastInsertId();
+            $novo_usuario_id = (int) $pdo->lastInsertId();
 
-            $usuario_id = (int) $_SESSION['usuario_id'];
+            $stmtCargo = $pdo->prepare(
+                'INSERT INTO usuario_cargo (usuario_id, cargo_id)
+                 VALUES (:usuario_id, :cargo_id)'
+            );
+            foreach ($cargosSelecionados as $cargo_id) {
+                $stmtCargo->execute([
+                    ':usuario_id' => $novo_usuario_id,
+                    ':cargo_id' => $cargo_id
+                ]);
+            }
 
             criarAcaoLog(
                 $pdo,
                 'Cadastro',
-                'empregados',
-                $empregado_id,
-                $usuario_id
+                'usuario',
+                $novo_usuario_id,
+                (int) $_SESSION['usuario_id']
             );
+
+            $pdo->commit();
 
             header('Location: index.php');
             exit;
 
         } catch (PDOException $ex) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
 
             $erros[] = $ex->getCode() === '23000'
-                ? 'E-mail ou matrícula já cadastrados.'
+                ? 'E-mail já cadastrado.'
                 : 'Erro ao salvar o cadastro.';
         }
     }
 }
+?>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cadastrar Usuário</title>
+</head>
+<body>
+    <h1>Cadastrar Usuário</h1>
+
+    <?php if ($erros): ?>
+        <ul>
+            <?php foreach ($erros as $erro): ?>
+                <li><?= htmlspecialchars($erro) ?></li>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
+
+    <form method="post">
+        <label>Nome:
+            <input type="text" name="nome" value="<?= htmlspecialchars($nome) ?>" required>
+        </label><br>
+
+        <label>E-mail:
+            <input type="email" name="email" value="<?= htmlspecialchars($email) ?>" required>
+        </label><br>
+
+        <label>Matrícula:
+            <input type="text" name="matricula" value="<?= htmlspecialchars($matricula) ?>" required>
+        </label><br>
+
+        <label>Senha:
+            <input type="password" name="senha" required>
+        </label><br>
+
+        <fieldset>
+            <legend>Cargos</legend>
+            <?php foreach ($cargos as $id => $titulo): ?>
+                <label>
+                    <input type="checkbox" name="cargos[]" value="<?= $id ?>"
+                        <?= in_array($id, $cargosSelecionados, true) ? 'checked' : '' ?>>
+                    <?= htmlspecialchars($titulo) ?>
+                </label><br>
+            <?php endforeach; ?>
+        </fieldset>
+
+        <button type="submit">Cadastrar</button>
+        <a href="index.php">Cancelar</a>
+    </form>
+</body>
+</html>
