@@ -105,16 +105,7 @@ $validacaoAtual->execute([
 $motivoAtual = $validacaoAtual->fetchColumn();
 ?>
 
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Validar ação</title>
-    <link rel="stylesheet" href="../css/estilo.css">
-</head>
-<body>
-    <main>
+<?php include '../includes/header.php'; ?>
         <div class="topo">
             <h2>Validar ação</h2>
             <a class="btn" href="index.php">Voltar à lista</a>
@@ -162,6 +153,4 @@ $motivoAtual = $validacaoAtual->fetchColumn();
             <button class="btn" type="submit" name="decisao" value="Aprovado">Aprovar</button>
             <button class="btn btn-perigo" type="submit" name="decisao" value="Negado">Negar</button>
         </form>
-    </main>
-</body>
-</html>
+<?php include '../includes/footer.php'; ?>
