@@ -1,42 +1,49 @@
 <?php
-// Editar ação (função do pesquisador).
-// Só ações que NÃO estão com status "Aprovado" podem ser editadas.
-// Depois de editar, registra no log com criarAcaoLog().
+session_start();
 
-require_once __DIR__ . '/../includes/conexao.php';          // fornece $pdo
-require_once __DIR__ . '/../includes/criar_acao_log.php';   // função criarAcaoLog()
+require_once __DIR__ . '/../includes/conexao.php';
+require_once __DIR__ . '/../includes/criar_acao_log.php';
 
-$usuarioId = (int) $_SESSION['usuario_id'];                 // definido pela autenticação
-$id        = (int) ($_GET['id'] ?? $_POST['id'] ?? 0);
+if (empty($_SESSION['usuario_id'])) {
+    header('Location: ../index.html');
+    exit;
+}
 
-// Ação que será editada
-$stmt = $pdo->prepare(
+$usuarioId = (int) $_SESSION['usuario_id'];
+$id = filter_input(
+    $_SERVER['REQUEST_METHOD'] === 'POST' ? INPUT_POST : INPUT_GET,
+    'id',
+    FILTER_VALIDATE_INT,
+    ['options' => ['min_range' => 1]]
+);
+
+if (!$id) {
+    http_response_code(400);
+    exit('ID da ação inválido.');
+}
+
+$stmt = $conexao->prepare(
     'SELECT id, titulo, descricao, data_de_realizacao, status_acao, categoria_id
      FROM acao
      WHERE id = :id'
 );
 $stmt->execute([':id' => $id]);
 $acao = $stmt->fetch(PDO::FETCH_ASSOC);
-
 $bloqueada = $acao && $acao['status_acao'] === 'Aprovado';
-
-// Categorias para o <select>
-$categorias = $pdo->query('SELECT id, nome FROM categoria ORDER BY nome')
-                  ->fetchAll(PDO::FETCH_ASSOC);
-
+$categorias = $conexao->query('SELECT id, nome FROM categoria ORDER BY nome')
+    ->fetchAll(PDO::FETCH_ASSOC);
 $erros = [];
 
 if ($acao && !$bloqueada && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    $titulo      = trim($_POST['titulo'] ?? '');
-    $descricao   = trim($_POST['descricao'] ?? '');
-    $dataStr     = trim($_POST['data_de_realizacao'] ?? '');
+    $titulo = trim($_POST['titulo'] ?? '');
+    $descricao = trim($_POST['descricao'] ?? '');
+    $dataStr = trim($_POST['data_de_realizacao'] ?? '');
     $categoriaId = (int) ($_POST['categoria_id'] ?? 0);
 
-    // Mantém o que o usuário digitou caso haja erro
-    $acao['titulo']             = $titulo;
-    $acao['descricao']          = $descricao;
+    $acao['titulo'] = $titulo;
+    $acao['descricao'] = $descricao;
     $acao['data_de_realizacao'] = $dataStr;
-    $acao['categoria_id']       = $categoriaId;
+    $acao['categoria_id'] = $categoriaId;
 
     if ($titulo === '' || mb_strlen($titulo) > 100) {
         $erros[] = 'O título é obrigatório e deve ter até 100 caracteres.';
@@ -56,16 +63,15 @@ if ($acao && !$bloqueada && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!$erros) {
         try {
-            $pdo->beginTransaction();
+            $conexao->beginTransaction();
 
-            // Trava a linha e confere o status de novo, dentro da transação
-            $stmt = $pdo->prepare('SELECT status_acao FROM acao WHERE id = :id FOR UPDATE');
+            $stmt = $conexao->prepare('SELECT status_acao FROM acao WHERE id = :id FOR UPDATE');
             $stmt->execute([':id' => $id]);
             if ($stmt->fetchColumn() === 'Aprovado') {
                 throw new RuntimeException('Esta ação já foi aprovada e não pode ser editada.');
             }
 
-            $stmt = $pdo->prepare(
+            $stmt = $conexao->prepare(
                 'UPDATE acao
                  SET titulo = :titulo,
                      descricao = :descricao,
@@ -74,51 +80,51 @@ if ($acao && !$bloqueada && $_SERVER['REQUEST_METHOD'] === 'POST') {
                  WHERE id = :id'
             );
             $stmt->execute([
-                ':titulo'    => $titulo,
+                ':titulo' => $titulo,
                 ':descricao' => $descricao,
-                ':data'      => $dataStr,
+                ':data' => $dataStr,
                 ':categoria' => $categoriaId,
-                ':id'        => $id,
+                ':id' => $id,
             ]);
 
-            criarAcaoLog($pdo, 'UPDATE', 'acao', $id, $usuarioId);
+            criarAcaoLog($conexao, 'UPDATE', 'acao', $id, $usuarioId);
+            $conexao->commit();
 
-            $pdo->commit();
-
-            header('Location: minhas_acoes.php');
+            header('Location: index.php');
             exit;
         } catch (RuntimeException $ex) {
-            $pdo->rollBack();
+            if ($conexao->inTransaction()) {
+                $conexao->rollBack();
+            }
             $erros[] = $ex->getMessage();
         } catch (Throwable $ex) {
-            if ($pdo->inTransaction()) {
-                $pdo->rollBack();
+            if ($conexao->inTransaction()) {
+                $conexao->rollBack();
             }
             error_log($ex->getMessage());
             $erros[] = 'Não foi possível editar a ação. Tente novamente.';
         }
     }
 }
+
+if (!$acao) {
+    http_response_code(404);
+}
 ?>
 <?php require __DIR__ . '/../includes/header.php'; ?>
 
 <div class="topo">
     <h2>Editar ação</h2>
-    <a class="btn btn-pequeno" href="minhas_acoes.php">Voltar</a>
+    <a class="btn" href="index.php">Voltar ao painel do Pesquisador</a>
 </div>
 
 <?php if (!$acao): ?>
-
     <p class="aviso">Ação não encontrada.</p>
-
 <?php elseif ($bloqueada): ?>
-
     <p class="aviso">Esta ação já foi aprovada e não pode ser editada.</p>
-
 <?php else: ?>
-
     <?php foreach ($erros as $erro): ?>
-        <p class="aviso"><?= htmlspecialchars($erro) ?></p>
+        <p class="aviso" role="alert"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></p>
     <?php endforeach; ?>
 
     <form method="post" action="editar_acao.php?id=<?= (int) $acao['id'] ?>">
@@ -126,14 +132,14 @@ if ($acao && !$bloqueada && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <label for="titulo">Título</label>
         <input type="text" id="titulo" name="titulo" maxlength="100" required
-               value="<?= htmlspecialchars($acao['titulo']) ?>">
+               value="<?= htmlspecialchars($acao['titulo'], ENT_QUOTES, 'UTF-8') ?>">
 
         <label for="descricao">Descrição</label>
-        <textarea id="descricao" name="descricao" rows="5" required><?= htmlspecialchars($acao['descricao']) ?></textarea>
+        <textarea id="descricao" name="descricao" rows="5" required><?= htmlspecialchars($acao['descricao'], ENT_QUOTES, 'UTF-8') ?></textarea>
 
         <label for="data_de_realizacao">Data de realização</label>
         <input type="date" id="data_de_realizacao" name="data_de_realizacao" required
-               value="<?= htmlspecialchars($acao['data_de_realizacao']) ?>">
+               value="<?= htmlspecialchars($acao['data_de_realizacao'], ENT_QUOTES, 'UTF-8') ?>">
 
         <label for="categoria_id">Categoria</label>
         <select id="categoria_id" name="categoria_id" required>
@@ -141,14 +147,13 @@ if ($acao && !$bloqueada && $_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php foreach ($categorias as $categoria): ?>
                 <option value="<?= (int) $categoria['id'] ?>"
                     <?= (int) $categoria['id'] === (int) $acao['categoria_id'] ? 'selected' : '' ?>>
-                    <?= htmlspecialchars($categoria['nome']) ?>
+                    <?= htmlspecialchars($categoria['nome'], ENT_QUOTES, 'UTF-8') ?>
                 </option>
             <?php endforeach; ?>
         </select>
 
         <button type="submit" class="btn">Salvar alterações</button>
     </form>
-
 <?php endif; ?>
 
 <?php require __DIR__ . '/../includes/footer.php'; ?>
