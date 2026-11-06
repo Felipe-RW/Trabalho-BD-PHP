@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST["email"];
     $senha = $_POST["senha"];
 
-    // Busca o usuário no banco.
+    // Busca o usuário no banco
     $sql = "SELECT * FROM usuario
             WHERE email = :email
             AND senha = :senha
@@ -26,11 +26,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($usuario) {
 
-        // Guarda os dados do usuário na sessão.
+        // Guarda os dados do usuário na sessão
         $_SESSION["usuario_id"] = $usuario["id"];
         $_SESSION["usuario_nome"] = $usuario["nome"];
 
-        // Busca os cargos do usuário.
+        // Busca os cargos do usuário
         $sqlCargos = "SELECT c.titulo
                       FROM cargo c
                       INNER JOIN usuario_cargo uc

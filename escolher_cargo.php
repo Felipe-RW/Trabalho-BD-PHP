@@ -45,7 +45,6 @@ function temCargo($cargo, $cargos) {
 
         <div class="container_cargos">
 
-            <!-- Administrador -->
             <?php if (temCargo("Administrador", $cargos)): ?>
 
                 <a href="administrador/index.php" class="card_cargo">
@@ -63,7 +62,6 @@ function temCargo($cargo, $cargos) {
             <?php endif; ?>
 
 
-            <!-- Comitê -->
             <?php if (temCargo("Comitê", $cargos)): ?>
 
                 <a href="comite/index.php" class="card_cargo">
@@ -81,7 +79,6 @@ function temCargo($cargo, $cargos) {
             <?php endif; ?>
 
 
-            <!-- Pesquisador -->
             <?php if (temCargo("Pesquisador", $cargos)): ?>
 
                 <a href="pesquisador/index.php" class="card_cargo">
@@ -99,7 +96,6 @@ function temCargo($cargo, $cargos) {
             <?php endif; ?>
 
 
-            <!-- Validador -->
             <?php if (temCargo("Validador", $cargos)): ?>
 
                 <a href="validador/index.php" class="card_cargo">
