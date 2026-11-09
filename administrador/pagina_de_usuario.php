@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
             $_SESSION['mensagem_usuario'] = $mensagem;
-            header('Location: Pagina%20de%20usuario.php');
+            header('Location: pagina_de_usuario.php');
             exit;
         } catch (InvalidArgumentException $e) {
             $erro = $e->getMessage();
@@ -131,13 +131,13 @@ $formulario = $usuarioEdicao ?: $dados;
 <header><strong>Embrapa — Administração</strong><a href="index.php">Painel administrativo</a></header>
 <main>
     <h1>Gerenciar usuários</h1>
-    <nav aria-label="Usuários"><a href="Pagina%20de%20usuario.php">Listar usuários</a><a href="?pagina=cadastrar">Cadastrar usuário</a></nav>
+    <nav aria-label="Usuários"><a href="pagina_de_usuario.php">Listar usuários</a><a href="?pagina=cadastrar">Cadastrar usuário</a></nav>
     <?php if ($erro): ?><p class="erro" role="alert"><?= escapar($erro) ?></p><?php endif; ?>
     <?php if ($mensagem): ?><p class="sucesso" role="status"><?= escapar($mensagem) ?></p><?php endif; ?>
     <?php if ($pagina === 'cadastrar' || $usuarioEdicao): ?>
     <section>
         <h2><?= $usuarioEdicao ? 'Editar usuário' : 'Cadastrar usuário' ?></h2>
-        <form method="post" action="Pagina%20de%20usuario.php" class="campos">
+        <form method="post" action="pagina_de_usuario.php" class="campos">
             <input type="hidden" name="csrf" value="<?= escapar($csrf) ?>">
             <input type="hidden" name="acao" value="<?= $usuarioEdicao ? 'editar' : 'cadastrar' ?>">
             <?php if ($usuarioEdicao): ?><input type="hidden" name="id" value="<?= (int) $usuarioEdicao['id'] ?>"><?php endif; ?>
@@ -150,19 +150,19 @@ $formulario = $usuarioEdicao ?: $dados;
                 <?php foreach ($cargos as $cargo): ?><option value="<?= (int) $cargo['id'] ?>" <?= (int) $cargoSelecionado === (int) $cargo['id'] ? 'selected' : '' ?>><?= escapar($cargo['titulo']) ?></option><?php endforeach; ?>
             </select>
             <?php endif; ?>
-            <div class="acoes"><button type="submit">Salvar usuário</button><a href="Pagina%20de%20usuario.php">Cancelar</a></div>
+            <div class="acoes"><button type="submit">Salvar usuário</button><a href="pagina_de_usuario.php">Cancelar</a></div>
         </form>
     </section>
     <?php endif; ?>
     <section>
         <h2>Usuários cadastrados</h2>
-        <form method="get" class="busca"><label for="busca">Buscar por nome, e-mail ou matrícula</label><input id="busca" name="busca" value="<?= escapar($busca) ?>"><button type="submit">Buscar</button><a href="Pagina%20de%20usuario.php">Limpar</a></form>
+        <form method="get" class="busca"><label for="busca">Buscar por nome, e-mail ou matrícula</label><input id="busca" name="busca" value="<?= escapar($busca) ?>"><button type="submit">Buscar</button><a href="pagina_de_usuario.php">Limpar</a></form>
         <div class="tabela"><table><caption>Lista de usuários e ações disponíveis</caption><thead><tr><th scope="col">Nome</th><th scope="col">E-mail</th><th scope="col">Matrícula</th><th scope="col">Status</th><th scope="col">Ações</th></tr></thead><tbody>
         <?php foreach ($usuarios as $usuario): ?>
             <tr><td><?= escapar($usuario['nome']) ?></td><td><?= escapar($usuario['email']) ?></td><td><?= escapar($usuario['matricula']) ?></td><td><?= $usuario['ativo'] ? 'Ativo' : 'Inativo' ?></td><td><div class="acoes">
                 <a href="?editar=<?= (int) $usuario['id'] ?>">Editar<span class="sr-only"> <?= escapar($usuario['nome']) ?></span></a>
                 <?php if ($usuario['ativo'] && (int) $usuario['id'] !== (int) $adminId): ?>
-                <form method="post" action="Pagina%20de%20usuario.php" onsubmit="return confirm('Desativar este usuário? Ele não poderá mais acessar o sistema.');">
+                <form method="post" action="pagina_de_usuario.php" onsubmit="return confirm('Desativar este usuário? Ele não poderá mais acessar o sistema.');">
                     <input type="hidden" name="csrf" value="<?= escapar($csrf) ?>"><input type="hidden" name="acao" value="desativar"><input type="hidden" name="id" value="<?= (int) $usuario['id'] ?>"><button type="submit" class="perigo">Desativar<span class="sr-only"> <?= escapar($usuario['nome']) ?></span></button>
                 </form>
                 <?php endif; ?>
