@@ -329,3 +329,34 @@ input, select, textarea {
     justify-content: center;
     align-items: center;
 }
+
+.enviar_acao_painel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+    flex-direction: column;
+}
+
+.enviar_acao_painel h1 {
+    text-align: center;
+}
+
+.acoes-formulario {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 230px;
+    flex-direction: row;
+}
+
+.acoes-formulario .btn {
+    min-width: 100px;
+    text-align: center;
+}
+
+.enviar_acao_painel textarea {
+    min-height: 150px;
+    resize: vertical;
+}
