@@ -11,6 +11,7 @@ if (!isset($_SESSION['usuario_id'])) {
 $usuario_id = $_SESSION['usuario_id'];
 
 $sql = "SELECT
+            a.id,
             a.titulo,
             a.data_de_realizacao,
             a.status_acao,
@@ -40,6 +41,7 @@ $acoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <h2 class="tabela_gap">Área do pesquisador</h2>
                     <h2 class="tabela_gap">Minhas Ações</h2>
                     <p>Acompanhe a situação das suas ações aqui.</p>
+                    <a class="btn btn-acoes" href="index.php">Voltar</a>
                 </section>
             </div>
 
@@ -52,6 +54,7 @@ $acoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <th>Data de realização</th>
                                 <th>Categoria</th>
                                 <th>Status</th>
+                                <th>Ações</th>
                             </tr>
                         </thead>
 
@@ -76,12 +79,24 @@ $acoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                 <?= htmlspecialchars($acao['status_acao']) ?>
                                             </span>
                                         </td>
+                                        <td>
+                                            <?php if ($acao['status_acao'] === 'Aprovado'): ?>
+                                                <button class="btn btn-editar" disabled>
+                                                    Editar
+                                                </button>
+                                            <?php else: ?>
+                                                <a class="btn btn-editar"
+                                                href="editar_acao.php?id=<?= (int)$acao['id'] ?>">
+                                                    Editar
+                                                </a>
+                                            <?php endif; ?>
+                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
 
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="4" class="sem-acoes">
+                                    <td colspan="5" class="sem-acoes">
                                         Você ainda não enviou nenhuma ação.
                                     </td>
                                 </tr>

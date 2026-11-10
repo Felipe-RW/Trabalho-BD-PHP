@@ -1,6 +1,7 @@
 <?php
+session_start();
+
 require_once '../includes/conexao.php';
-include '../includes/header.php';
 
 $titulo = '';
 $categoria_id = '';
@@ -8,11 +9,21 @@ $data_de_realizacao = '';
 $descricao = '';
 $erro = '';
 
+$usuario_id = (int) ($_SESSION['usuario_id'] ?? $_SESSION['id'] ?? 0);
+
+// Verifica se o usuário está logado
+if ($usuario_id <= 0) {
+    header('Location: ../login.php');
+    exit;
+}
+
+// Busca as categorias
 $sql = "SELECT id, nome FROM categoria ORDER BY nome";
 $stmt = $conexao->prepare($sql);
 $stmt->execute();
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Processa o formulário
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $titulo = trim($_POST['titulo'] ?? '');
@@ -27,10 +38,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         empty($descricao)
     ) {
         $erro = 'Preencha todos os campos!';
+
+    } elseif (!ctype_digit($categoria_id) || (int)$categoria_id <= 0) {
+        $erro = 'Selecione uma categoria válida.';
+
     } else {
 
         try {
 
+            // Inicia uma transação
+            $conexao->beginTransaction();
+
+            // 1. Cadastra a ação
             $sql = "INSERT INTO acao
                     (titulo, categoria_id, data_de_realizacao, descricao)
                     VALUES
@@ -40,110 +59,131 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $stmt->execute([
                 ':titulo' => $titulo,
-                ':categoria_id' => $categoria_id,
+                ':categoria_id' => (int)$categoria_id,
                 ':data_de_realizacao' => $data_de_realizacao,
                 ':descricao' => $descricao
             ]);
 
-            header('Location: index.php?sucesso=1');
+            // Recupera o ID da ação cadastrada
+            $acao_id = $conexao->lastInsertId();
+
+            // 2. Vincula a ação ao pesquisador
+            $sql = "INSERT INTO acao_usuario
+                    (usuario_id, acao_id)
+                    VALUES
+                    (:usuario_id, :acao_id)";
+
+            $stmt = $conexao->prepare($sql);
+
+            $stmt->execute([
+                ':usuario_id' => $usuario_id,
+                ':acao_id' => $acao_id
+            ]);
+
+            // Confirma as duas operações
+            $conexao->commit();
+
+            // Informa ao painel que o cadastro foi realizado
+            $_SESSION['acao_cadastrada'] = true;
+
+            header('Location: index.php');
             exit;
 
         } catch (PDOException $e) {
+
+            // Desfaz as operações em caso de erro
+            if ($conexao->inTransaction()) {
+                $conexao->rollBack();
+            }
+
             $erro = 'Erro ao cadastrar ação. Verifique os dados informados.';
         }
     }
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="pt-br">
+<?php include '../includes/header.php'; ?>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<main>
+    <div class="enviar_acao_painel">
 
-    <title>Banco de Dados Embrapa</title>
+        <h1>Enviar Ação</h1>
 
-    <link rel="stylesheet" href="../css/estilo.css">
-</head>
-<body>
-    <main>
-        <div class="enviar_acao_painel">
+        <?php if (!empty($erro)): ?>
+            <p style="color: red;" role="alert">
+                <?= htmlspecialchars($erro) ?>
+            </p>
+        <?php endif; ?>
 
-            <h1>Enviar Ação</h1>
+        <br>
 
-            <?php if (!empty($erro)): ?>
-                <p style="color: red;">
-                    <?= htmlspecialchars($erro) ?>
-                </p>
-            <?php endif; ?>
+        <form method="POST" class="enviar_acao_painel">
+
+            <label>Título da Ação:</label>
+
+            <input
+                type="text"
+                name="titulo"
+                maxlength="100"
+                value="<?= htmlspecialchars($titulo) ?>"
+                required
+            >
 
             <br>
 
-            <form method="POST" class="enviar_acao_painel">
+            <label>Categoria:</label>
 
-                <label>Título da Ação:</label>
+            <select name="categoria_id" required>
 
-                <input
-                    type="text"
-                    name="titulo"
-                    maxlength="100"
-                    value="<?= htmlspecialchars($titulo) ?>"
-                    required
-                >
+                <option value="">Selecione uma categoria</option>
 
-                <br>
+                <?php foreach ($categorias as $categoria): ?>
 
-                <label>Categoria:</label>
+                    <option
+                        value="<?= $categoria['id'] ?>"
+                        <?= ($categoria_id == $categoria['id']) ? 'selected' : '' ?>
+                    >
+                        <?= htmlspecialchars($categoria['nome']) ?>
+                    </option>
 
-                <select name="categoria_id" required>
+                <?php endforeach; ?>
 
-                    <option value="">Selecione uma categoria</option>
+            </select>
 
-                    <?php foreach ($categorias as $categoria): ?>
+            <br>
 
-                        <option
-                            value="<?= $categoria['id'] ?>"
-                            <?= ($categoria_id == $categoria['id']) ? 'selected' : '' ?>
-                        >
-                            <?= htmlspecialchars($categoria['nome']) ?>
-                        </option>
+            <label>Data de realização:</label>
 
-                    <?php endforeach; ?>
+            <input
+                type="date"
+                name="data_de_realizacao"
+                value="<?= htmlspecialchars($data_de_realizacao) ?>"
+                required
+            >
 
-                </select>
+            <br>
 
-                <br>
+            <label>Descrição:</label>
 
-                <label>Data de realização:</label>
+            <textarea name="descricao" required><?= htmlspecialchars($descricao) ?></textarea>
 
-                <input
-                    type="date"
-                    name="data_de_realizacao"
-                    value="<?= htmlspecialchars($data_de_realizacao) ?>"
-                    required
-                >
+            <br>
 
-                <br>
+            <div class="acoes-formulario">
 
-                <label>Descrição:</label>
+                <button type="submit" class="btn">
+                    Salvar
+                </button>
 
-                <textarea
-                    name="descricao"
-                    required
-                ><?= htmlspecialchars($descricao) ?></textarea>
+                <a href="index.php" class="btn">
+                    Cancelar
+                </a>
 
-                <br>
+            </div>
 
-                <div class="acoes-formulario">
-                    <button type="submit" class="btn">Salvar</button>
+        </form>
 
-                    <a href="index.php" class="btn">Cancelar</a>
-                </div>
+    </div>
+</main>
 
-            </form>
-        </div>
-    </main>
-</body>
-</html>
 <?php include '../includes/footer.php'; ?>

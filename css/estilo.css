@@ -362,6 +362,12 @@ input, select, textarea {
     margin-bottom: 30px;
 }
 
+.btn-acoes {
+    position: fixed;
+    top: 190px;
+    right: 620px;
+}
+
 @media (max-width: 600px) {
     .conteudo {
         width: 100%;
@@ -670,4 +676,26 @@ input, select, textarea {
 .enviar_acao_painel textarea {
     min-height: 150px;
     resize: vertical;
+}
+
+.btn-editar {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #1f3a5f;
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-editar:hover {
+    background-color: #0056b3;
+}
+
+.btn-editar:disabled {
+    background-color: #999;
+    color: #eee;
+    cursor: not-allowed;
+    opacity: 0.7;
 }
