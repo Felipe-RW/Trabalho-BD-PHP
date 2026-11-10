@@ -15,27 +15,7 @@ function temCargo($cargo, $cargos) {
 
 ?>
 
-<!DOCTYPE html>
-<html lang="pt-br">
-
-<head>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Escolher Cargo - Embrapa</title>
-
-    <link rel="stylesheet" href="css/estilo.css">
-
-</head>
-
-<body>
-
-    <header>
-        <h1>Embrapa</h1>
-    </header>
-
-    <main>
+<?php include __DIR__ . '/includes/header.php'; ?>
 
         <h2>Escolha seu cargo de acesso</h2>
 
@@ -114,12 +94,4 @@ function temCargo($cargo, $cargos) {
 
         </div>
 
-    </main>
-
-    <footer>
-        <p>Projeto de Banco de Dados</p>
-    </footer>
-
-</body>
-
-</html>
+<?php include __DIR__ . '/includes/footer.php'; ?>
