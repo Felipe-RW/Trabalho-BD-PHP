@@ -633,7 +633,3 @@ input, select, textarea {
     min-height: 150px;
     resize: vertical;
 }
-
-.tabela_gap {
-    gap: 40px;
-}
