@@ -1,9 +1,31 @@
 <?php
+session_start();
+require '../includes/conexao.php';
 $pesquisador = "Pesquisador";
 
 $pendentes = 0;
 $aprovadas = 0;
 $recusadas = 0;
+$usuario_id = (int) ($_SESSION['usuario_id'] ?? $_SESSION['id'] ?? 0);
+if ($usuario_id > 0) {
+    $consulta = $conexao->prepare(
+        'SELECT a.status_acao, COUNT(*) AS quantidade
+         FROM acao a
+         JOIN acao_usuario au ON au.acao_id = a.id
+         WHERE au.usuario_id = :usuario_id
+         GROUP BY a.status_acao'
+    );
+    $consulta->execute(['usuario_id' => $usuario_id]);
+    foreach ($consulta->fetchAll() as $grupo) {
+        switch ($grupo['status_acao']) {
+            case 'Em Avaliação': $pendentes = (int) $grupo['quantidade']; break;
+            case 'Aprovado': $aprovadas = (int) $grupo['quantidade']; break;
+            case 'Negado': $recusadas = (int) $grupo['quantidade']; break;
+        }
+    }
+}
+$acao_cadastrada = !empty($_SESSION['acao_cadastrada']);
+unset($_SESSION['acao_cadastrada']);
 ?>
 
 <!DOCTYPE html>
@@ -25,6 +47,9 @@ $recusadas = 0;
     <main class="conteudo">
 
         <div class="painel-pesquisador">
+            <?php if ($acao_cadastrada): ?>
+                <p class="aviso" role="status">Ação cadastrada com sucesso e enviada para avaliação.</p>
+            <?php endif; ?>
             <div class="cabecalho-pesquisador">
                 <div class="botoes-pesquisador">
                     <button type="button" class="btn btn-visualizar-acoes">Visualizar ações</button>
