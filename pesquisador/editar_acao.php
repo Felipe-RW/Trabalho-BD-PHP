@@ -115,7 +115,7 @@ if (!$acao) {
 
 <div class="topo">
     <h2>Editar ação</h2>
-    <a class="btn" href="index.php">Voltar ao painel do Pesquisador</a>
+    <a class="btn" href="acoes_pendentes.php">Voltar</a>
 </div>
 
 <?php if (!$acao): ?>

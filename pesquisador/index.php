@@ -6,6 +6,7 @@ $pesquisador = "Pesquisador";
 $pendentes = 0;
 $aprovadas = 0;
 $recusadas = 0;
+
 $usuario_id = (int) ($_SESSION['usuario_id'] ?? $_SESSION['id'] ?? 0);
 if ($usuario_id > 0) {
     $consulta = $conexao->prepare(
@@ -52,20 +53,20 @@ unset($_SESSION['acao_cadastrada']);
 
             <section class="acoes">
 
-        <div class="card-pesquisador card-pendente">
-            <h3>Ações pendentes</h3>
-            <p class="card-quantidade"><strong><?= $pendentes ?></strong> ações</p>
-        </div>
+                <div class="card-pesquisador card-pendente">
+                    <h3>Ações pendentes</h3>
+                    <p class="card-quantidade"><strong><?= $pendentes ?></strong> ações</p>
+                </div>
 
-        <div class="card-pesquisador card-aprovada">
-            <h3>Ações aprovadas</h3>
-            <p class="card-quantidade"><strong><?= $aprovadas ?></strong> ações</p>
-        </div>
+                <div class="card-pesquisador card-aprovada">
+                    <h3>Ações aprovadas</h3>
+                    <p class="card-quantidade"><strong><?= $aprovadas ?></strong> ações</p>
+                </div>
 
-        <div class="card-pesquisador card-recusada">
-            <h3>Ações recusadas</h3>
-            <p class="card-quantidade"><strong><?= $recusadas ?></strong> ações</p>
-        </div>
+                <div class="card-pesquisador card-recusada">
+                    <h3>Ações recusadas</h3>
+                    <p class="card-quantidade"><strong><?= $recusadas ?></strong> ações</p>
+                </div>
 
             </section>
         </div>

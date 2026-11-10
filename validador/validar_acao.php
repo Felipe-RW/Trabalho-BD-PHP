@@ -26,56 +26,80 @@ $erro = null;
 
 if ($metodo === 'POST') {
     $status = $_POST['decisao'] ?? '';
+
     if (!in_array($status, ['Aprovado', 'Negado'], true)) {
         http_response_code(400);
         exit('Decisão inválida.');
     }
 
     $motivo = trim($_POST['motivo_rejeicao'] ?? '');
-    $motivo = $status === 'Negado' && $motivo !== '' ? $motivo : null;
 
-    try {
-        $conexao->beginTransaction();
+    if ($status === 'Negado' && $motivo === '') {
+        $erro = 'Para negar uma ação, é obrigatório informar o motivo.';
+    } else {
+        $motivo = $status === 'Negado' ? $motivo : null;
 
-        $atualizaAcao = $conexao->prepare(
-            'UPDATE acao SET status_acao = :status WHERE id = :id'
-        );
-        $atualizaAcao->execute([
-            ':status' => $status,
-            ':id' => $acaoId,
-        ]);
+        try {
+            $conexao->beginTransaction();
 
-        if ($atualizaAcao->rowCount() === 0) {
-            $verificaAcao = $conexao->prepare('SELECT id FROM acao WHERE id = :id');
-            $verificaAcao->execute([':id' => $acaoId]);
-            if (!$verificaAcao->fetchColumn()) {
-                $conexao->rollBack();
-                http_response_code(404);
-                exit('Ação não encontrada.');
+            $atualizaAcao = $conexao->prepare(
+                'UPDATE acao SET status_acao = :status WHERE id = :id'
+            );
+
+            $atualizaAcao->execute([
+                ':status' => $status,
+                ':id' => $acaoId,
+            ]);
+
+            if ($atualizaAcao->rowCount() === 0) {
+                $verificaAcao = $conexao->prepare(
+                    'SELECT id FROM acao WHERE id = :id'
+                );
+
+                $verificaAcao->execute([':id' => $acaoId]);
+
+                if (!$verificaAcao->fetchColumn()) {
+                    $conexao->rollBack();
+                    http_response_code(404);
+                    exit('Ação não encontrada.');
+                }
             }
+
+            $salvaValidacao = $conexao->prepare(
+                'INSERT INTO validacao
+                    (usuario_id, acao_id, motivo_rejeicao)
+                 VALUES
+                    (:usuario_id, :acao_id, :motivo_rejeicao)
+                 ON DUPLICATE KEY UPDATE
+                    motivo_rejeicao = VALUES(motivo_rejeicao)'
+            );
+
+            $salvaValidacao->execute([
+                ':usuario_id' => $usuarioId,
+                ':acao_id' => $acaoId,
+                ':motivo_rejeicao' => $motivo,
+            ]);
+
+            criarAcaoLog(
+                $conexao,
+                $status,
+                'validacao',
+                $acaoId,
+                $usuarioId
+            );
+
+            $conexao->commit();
+
+            header('Location: index.php?salvo=1');
+            exit;
+
+        } catch (Throwable $e) {
+            if ($conexao->inTransaction()) {
+                $conexao->rollBack();
+            }
+
+            $erro = 'Não foi possível salvar a validação. Verifique a conexão e tente novamente.';
         }
-
-        $salvaValidacao = $conexao->prepare(
-            'INSERT INTO validacao (usuario_id, acao_id, motivo_rejeicao)
-             VALUES (:usuario_id, :acao_id, :motivo_rejeicao)
-             ON DUPLICATE KEY UPDATE motivo_rejeicao = VALUES(motivo_rejeicao)'
-        );
-        $salvaValidacao->execute([
-            ':usuario_id' => $usuarioId,
-            ':acao_id' => $acaoId,
-            ':motivo_rejeicao' => $motivo,
-        ]);
-
-        criarAcaoLog($conexao, $status, 'validacao', $acaoId, $usuarioId);
-
-        $conexao->commit();
-        header('Location: validar_acao.php?id=' . $acaoId . '&salvo=1');
-        exit;
-    } catch (Throwable $e) {
-        if ($conexao->inTransaction()) {
-            $conexao->rollBack();
-        }
-        $erro = 'Não foi possível salvar a validação. Verifique a conexão e tente novamente.';
     }
 }
 
@@ -148,7 +172,7 @@ $motivoAtual = $validacaoAtual->fetchColumn();
             <input type="hidden" name="id" value="<?= (int) $acao['id'] ?>">
 
             <label for="motivo_rejeicao">Motivo (opcional):</label>
-            <textarea id="motivo_rejeicao" name="motivo_rejeicao" rows="4"><?= htmlspecialchars((string) $motivoAtual, ENT_QUOTES, 'UTF-8') ?></textarea>
+            <textarea id="motivo_rejeicao" name="motivo_rejeicao" rows="4"></textarea>
 
             <button class="btn" type="submit" name="decisao" value="Aprovado">Aprovar</button>
             <button class="btn btn-perigo" type="submit" name="decisao" value="Negado">Negar</button>
