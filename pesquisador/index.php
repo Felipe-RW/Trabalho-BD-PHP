@@ -28,21 +28,7 @@ $acao_cadastrada = !empty($_SESSION['acao_cadastrada']);
 unset($_SESSION['acao_cadastrada']);
 ?>
 
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Area do Pesquisador</title>
-
-    <link rel="stylesheet" href="../css/estilo.css">
-</head>
-
-<body>
-
-    <header>
-        <h1>Embrapa</h1>
-    </header>
+<?php include __DIR__ . '/../includes/header.php'; ?>
 
     <main class="conteudo">
 
@@ -86,9 +72,4 @@ unset($_SESSION['acao_cadastrada']);
 
     </main>
 
-    <footer>
-        Projeto Banco de Dados
-    </footer>
-
-</body>
-</html>
+<?php include __DIR__ . '/../includes/footer.php'; ?>
