@@ -1,10 +1,9 @@
 <?php
 $pesquisador = "Pesquisador";
 
-$pendentes = 3;
-$aprovadas = 8;
-$analise = 2;
-$devolvidas = 1;
+$pendentes = 0;
+$aprovadas = 0;
+$recusadas = 0;
 ?>
 
 <!DOCTYPE html>
@@ -27,6 +26,10 @@ $devolvidas = 1;
 
         <div class="painel-pesquisador">
             <div class="cabecalho-pesquisador">
+                <div class="botoes-pesquisador">
+                    <button type="button" class="btn btn-visualizar-acoes">Visualizar ações</button>
+                    <a class="btn-criar-acao" href="cadastrar_acao.php">Criar nova ação</a>
+                </div>
                 <section class="boas-vindas">
                     <h2>Área do pesquisador</h2>
 
@@ -34,7 +37,6 @@ $devolvidas = 1;
 
                     <p>Acompanhe suas ações e solicitações.</p>
                 </section>
-                <a class="btn-criar-acao" href="cadastrar_acao.php">Criar nova ação</a>
             </div>
 
             <section class="acoes">
@@ -42,25 +44,16 @@ $devolvidas = 1;
         <div class="card-pesquisador card-pendente">
             <h3>Ações pendentes</h3>
             <p class="card-quantidade"><strong><?= $pendentes ?></strong> ações</p>
-            <a href="">Consultar ações pendentes</a>
         </div>
 
         <div class="card-pesquisador card-aprovada">
             <h3>Ações aprovadas</h3>
             <p class="card-quantidade"><strong><?= $aprovadas ?></strong> ações</p>
-            <a href="">Consultar ações aprovadas</a>
         </div>
 
-        <div class="card-pesquisador card-analise">
-            <h3>Em análise</h3>
-            <p class="card-quantidade"><strong><?= $analise ?></strong> ações</p>
-            <a href="">Consultar ações em análise</a>
-        </div>
-
-        <div class="card-pesquisador card-devolvida">
-            <h3>Ações devolvidas</h3>
-            <p class="card-quantidade"><strong><?= $devolvidas ?></strong> ações</p>
-            <a href="">Consultar ações devolvidas</a>
+        <div class="card-pesquisador card-recusada">
+            <h3>Ações recusadas</h3>
+            <p class="card-quantidade"><strong><?= $recusadas ?></strong> ações</p>
         </div>
 
             </section>
