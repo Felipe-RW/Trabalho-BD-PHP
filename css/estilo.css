@@ -198,6 +198,20 @@ input, select, textarea {
     margin: 0 auto;
 }
 
+.cadastro-acao-pagina {
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+.cadastro-acao-pagina h2 {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.cadastro-acao-pagina form {
+    margin: 0 auto;
+}
+
 .categoria-titulo {
     margin-bottom: 20px;
     text-align: center;
@@ -384,17 +398,32 @@ input, select, textarea {
     margin: 8px 0;
 }
 
-.btn-criar-acao {
-    position: absolute;
-    top: 0;
-    right: 0;
+.botoes-pesquisador {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.btn-criar-acao,
+.btn-visualizar-acoes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 180px;
+    max-width: 50%;
     padding: 12px 20px;
+    border: none;
     border-radius: 6px;
     background: #1f3a5f;
     color: #fff;
+    font-family: inherit;
     font-size: 16px;
     font-weight: bold;
+    line-height: 1.25;
+    text-align: center;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .btn-criar-acao:focus-visible {
@@ -407,6 +436,11 @@ input, select, textarea {
     grid-template-columns: 1fr 1fr;
     gap: 20px;
     font-size: 16px;
+}
+
+.btn-visualizar-acoes:focus-visible {
+    outline: 3px solid #f0b429;
+    outline-offset: 3px;
 }
 
 .card-pesquisador {
@@ -425,8 +459,12 @@ input, select, textarea {
 
 .card-pendente { border-top-color: #2c527f; }
 .card-aprovada { border-top-color: #2c527f; }
-.card-analise { border-top-color: #2c527f; }
-.card-devolvida { border-top-color: #2c527f; }
+.card-recusada {
+    border-top-color: #2c527f;
+    grid-column: 1 / -1;
+    width: calc((100% - 20px) / 2);
+    justify-self: center;
+}
 
 .card-pesquisador h3 {
     color: #263b32;
