@@ -53,7 +53,7 @@ unset($_SESSION['acao_cadastrada']);
             <div class="cabecalho-pesquisador">
                 <div class="botoes-pesquisador">
                     <a class="btn btn-visualizar-acoes" href="acoes_pendentes.php">Visualizar ações</a>
-                    <a class="btn-criar-acao" href="cadastrar_acao.php">Criar nova ação</a>
+                    <a class="btn-criar-acao" href="enviar_acao.php">Criar nova ação</a>
                 </div>
                 <section class="boas-vindas">
                     <h2>Área do pesquisador</h2>
