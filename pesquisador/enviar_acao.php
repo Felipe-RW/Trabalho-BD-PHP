@@ -9,7 +9,7 @@ $descricao = '';
 $erro = '';
 
 $sql = "SELECT id, nome FROM categoria ORDER BY nome";
-$stmt = $pdo->prepare($sql);
+$stmt = $conexao->prepare($sql);
 $stmt->execute();
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     VALUES
                     (:titulo, :categoria_id, :data_de_realizacao, :descricao)";
 
-            $stmt = $pdo->prepare($sql);
+            $stmt = $conexao->prepare($sql);
 
             $stmt->execute([
                 ':titulo' => $titulo,
@@ -67,10 +67,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="../css/estilo.css">
 </head>
 <body>
-<main>
-    <div class="frame_login">
-
-        <div class="menu_administrador">
+    <main>
+        <div class="enviar_acao_painel">
 
             <h1>Enviar Ação</h1>
 
@@ -80,7 +78,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </p>
             <?php endif; ?>
 
-            <form method="POST">
+            <br>
+
+            <form method="POST" class="enviar_acao_painel">
 
                 <label>Título da Ação:</label>
 
@@ -135,14 +135,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <br>
 
-                <button type="submit">Salvar</button>
+                <div class="acoes-formulario">
+                    <button type="submit" class="btn">Salvar</button>
 
-                <a href="index.php">Cancelar</a>
+                    <a href="index.php" class="btn">Cancelar</a>
+                </div>
 
             </form>
         </div>
-    </div>
-</main>
+    </main>
 </body>
 </html>
 <?php include '../includes/footer.php'; ?>
