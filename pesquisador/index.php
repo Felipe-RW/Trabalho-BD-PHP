@@ -52,7 +52,7 @@ unset($_SESSION['acao_cadastrada']);
             <?php endif; ?>
             <div class="cabecalho-pesquisador">
                 <div class="botoes-pesquisador">
-                    <button type="button" class="btn btn-visualizar-acoes">Visualizar ações</button>
+                    <a class="btn btn-visualizar-acoes" href="acoes_pendentes.php">Visualizar ações</a>
                     <a class="btn-criar-acao" href="cadastrar_acao.php">Criar nova ação</a>
                 </div>
                 <section class="boas-vindas">
