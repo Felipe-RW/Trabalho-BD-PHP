@@ -32,23 +32,13 @@ $acoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <?php include '../includes/header.php'; ?>
 
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Área do Pesquisador</title>
-
-    <link rel="stylesheet" href="../css/estilo.css">
-</head>
-
 <body>
     <main class="conteudo">
         <div class="painel-pesquisador">
             <div class="cabecalho-pesquisador">
                 <section class="boas-vindas">
-                    <h2>Área do pesquisador</h2>
-                    <h2>Minhas Ações</h2>
+                    <h2 class="tabela_gap">Área do pesquisador</h2>
+                    <h2 class="tabela_gap">Minhas Ações</h2>
                     <p>Acompanhe a situação das suas ações aqui.</p>
                 </section>
             </div>
