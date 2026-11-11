@@ -15,12 +15,16 @@ $sql = "SELECT
             a.titulo,
             a.data_de_realizacao,
             a.status_acao,
-            c.nome AS categoria
+            c.nome AS categoria,
+            v.motivo_rejeicao AS motivo
         FROM acao a
         INNER JOIN acao_usuario au
             ON a.id = au.acao_id
         INNER JOIN categoria c
             ON a.categoria_id = c.id
+        LEFT JOIN validacao v
+            ON a.id = v.acao_id
+            AND au.usuario_id = v.usuario_id
         WHERE au.usuario_id = :usuario_id
         ORDER BY a.data_de_realizacao DESC";
 
@@ -34,7 +38,7 @@ $acoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <?php include '../includes/header.php'; ?>
 
 <body>
-    <main class="conteudo">
+    <main class="conteudo pagina-minhas-acoes">
         <div class="painel-pesquisador">
             <div class="cabecalho-pesquisador">
                 <section class="boas-vindas">
@@ -54,6 +58,7 @@ $acoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <th>Data de realização</th>
                                 <th>Categoria</th>
                                 <th>Status</th>
+                                <th>Motivo da rejeição</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
@@ -79,6 +84,13 @@ $acoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                 <?= htmlspecialchars($acao['status_acao']) ?>
                                             </span>
                                         </td>
+
+                                        <td>
+                                            <?= !empty($acao['motivo'])
+                                                ? htmlspecialchars($acao['motivo'])
+                                                : 'Ação Aprovada' ?>
+                                        </td>
+
                                         <td>
                                             <?php if ($acao['status_acao'] === 'Aprovado'): ?>
                                                 <button class="btn btn-editar" disabled>
@@ -96,7 +108,7 @@ $acoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="5" class="sem-acoes">
+                                    <td colspan="6" class="sem-acoes">
                                         Você ainda não enviou nenhuma ação.
                                     </td>
                                 </tr>
