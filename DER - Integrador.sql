@@ -6,13 +6,13 @@ create table usuario(
     nome VARCHAR(100) not null,
     email VARCHAR(100) not null unique,
     senha VARCHAR(50) not null,
-    matricula INT not null,
+    matricula INT not null unique,
     ativo boolean not null default 1
 );
 
 create table categoria(
 	id INT auto_increment primary Key,
-    nome VARCHAR(100) not null
+    nome VARCHAR(100) not null unique
 );
 
 create table acao(

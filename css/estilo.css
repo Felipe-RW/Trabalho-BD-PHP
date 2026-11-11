@@ -221,6 +221,15 @@ input, select, textarea {
     margin: 0 auto;
 }
 
+.categoria-lista {
+    margin-top: 48px;
+    padding-top: 24px;
+}
+
+.categoria-lista h3 {
+    margin-bottom: 16px;
+}
+
 .categoria-acoes {
     display: flex;
     justify-content: center;
