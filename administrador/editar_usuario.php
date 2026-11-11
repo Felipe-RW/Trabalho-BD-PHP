@@ -263,10 +263,7 @@ $classeBody = 'pagina-usuarios';
                             <td><?= $usuario['ativo'] ? 'Ativo' : 'Inativo' ?></td>
                             <td>
                                 <div class="acoes">
-                                    <?php if (
-                                        (int) $usuario['id'] !== (int) $adminId ||
-                                        strcasecmp($usuario['email'], 'teste@teste.com') === 0
-                                    ): ?>
+                                    <?php if ((int) $usuario['id'] !== (int) $adminId): ?>
                                         <a class="btn-editar-usuario" href="?editar=<?= (int) $usuario['id'] ?>">
                                             Editar<span class="sr-only"> <?= escapar($usuario['nome']) ?></span>
                                         </a>
