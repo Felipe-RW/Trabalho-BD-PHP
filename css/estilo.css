@@ -456,37 +456,49 @@ input, select, textarea {
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
-.card-menu-administrador {
+.opcoes-administrador {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.card-opcao-administrador {
     display: flex;
-    flex-wrap: wrap;
+    min-height: 190px;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    gap: 18px;
-    padding: 36px;
+    gap: 14px;
+    padding: 26px 22px;
     background: rgba(255, 255, 255, 0.97);
-    border-radius: 16px;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.24);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 14px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.card-opcao-administrador h3 {
+    color: #1f3a5f;
+    font-size: 20px;
+}
+
+.card-opcao-administrador p {
+    color: #606b78;
+    font-size: 14px;
+    line-height: 1.5;
 }
 
 .btn-adm {
-    display: flex;
-    flex: 1 1 200px;
-    max-width: 240px;
-    min-height: 58px;
-    align-items: center;
-    justify-content: center;
-    padding: 12px 18px;
+    min-width: 130px;
+    margin-top: auto;
+    padding: 11px 20px;
     text-align: center;
     font-weight: bold;
 }
 
 @media (max-width: 600px) {
-    .card-menu-administrador {
-        padding: 24px 18px;
-    }
-
-    .btn-adm {
-        flex-basis: 100%;
-        max-width: none;
+    .opcoes-administrador {
+        grid-template-columns: 1fr;
     }
 }
 
