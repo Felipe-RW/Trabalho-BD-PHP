@@ -81,7 +81,7 @@ include '../includes/header.php';
 
         <div class="categoria-acoes">
             <button class="btn" type="submit">Cadastrar</button>
-            <a class="btn" href="index.php">Voltar ao painel do Administrador</a>
+            <a class="btn" href="index.php">Voltar ao painel</a>
         </div>
     </form>
 
