@@ -173,13 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $cargos = $db->query('SELECT id, titulo FROM cargo ORDER BY titulo')->fetchAll(PDO::FETCH_ASSOC);
 $busca = is_string($_GET['busca'] ?? null) ? trim($_GET['busca']) : '';
 $consulta = $db->prepare(
-    'SELECT u.id, u.nome, u.email, u.matricula, u.ativo,
-            EXISTS (
-                SELECT 1
-                FROM usuario_cargo uc
-                JOIN cargo c ON c.id = uc.cargo_id
-                WHERE uc.usuario_id = u.id AND c.titulo = \'Administrador\'
-            ) AS is_admin
+    'SELECT u.id, u.nome, u.email, u.matricula, u.ativo
      FROM usuario u
      WHERE u.nome LIKE ? OR u.email LIKE ? OR CAST(u.matricula AS CHAR) LIKE ?
      ORDER BY u.nome, u.id'
@@ -233,7 +227,7 @@ $classeBody = 'pagina-usuarios';
 
                 <div class="acoes">
                     <button type="submit">Salvar usuário</button>
-                    <a href="editar_usuario.php">Cancelar</a>
+                    <a class="btn-limpar-busca" href="editar_usuario.php">Cancelar</a>
                 </div>
             </form>
         </section>
@@ -269,7 +263,10 @@ $classeBody = 'pagina-usuarios';
                             <td><?= $usuario['ativo'] ? 'Ativo' : 'Inativo' ?></td>
                             <td>
                                 <div class="acoes">
-                                    <?php if (!(bool) $usuario['is_admin']): ?>
+                                    <?php if (
+                                        (int) $usuario['id'] !== (int) $adminId ||
+                                        strcasecmp($usuario['email'], 'teste@teste.com') === 0
+                                    ): ?>
                                         <a class="btn-editar-usuario" href="?editar=<?= (int) $usuario['id'] ?>">
                                             Editar<span class="sr-only"> <?= escapar($usuario['nome']) ?></span>
                                         </a>
