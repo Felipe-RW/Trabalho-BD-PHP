@@ -103,45 +103,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 <?php include '../includes/header.php'; ?>
-    <h1>Cadastrar Usuário</h1>
+<section class="cadastro-usuario-pagina">
+    <div class="cadastro-usuario-titulo">
+        <h2>Cadastrar usuário</h2>
+    </div>
 
     <?php if ($erros): ?>
-        <ul>
+        <ul class="aviso" role="alert">
             <?php foreach ($erros as $erro): ?>
-                <li><?= htmlspecialchars($erro) ?></li>
+                <li><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></li>
             <?php endforeach; ?>
         </ul>
     <?php endif; ?>
 
-    <form method="post">
-        <label>Nome:
-            <input type="text" name="nome" value="<?= htmlspecialchars($nome) ?>" required>
-        </label><br>
+    <form method="post" action="cadastrar_usuario.php">
+        <label for="nome">Nome</label>
+        <input type="text" id="nome" name="nome" value="<?= htmlspecialchars($nome, ENT_QUOTES, 'UTF-8') ?>" autocomplete="name" required>
 
-        <label>E-mail:
-            <input type="email" name="email" value="<?= htmlspecialchars($email) ?>" required>
-        </label><br>
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" value="<?= htmlspecialchars($email, ENT_QUOTES, 'UTF-8') ?>" autocomplete="email" required>
 
-        <label>Matrícula:
-            <input type="text" name="matricula" value="<?= htmlspecialchars($matricula) ?>" required>
-        </label><br>
+        <label for="matricula">Matrícula</label>
+        <input type="text" id="matricula" name="matricula" value="<?= htmlspecialchars($matricula, ENT_QUOTES, 'UTF-8') ?>" inputmode="numeric" required>
 
-        <label>Senha:
-            <input type="password" name="senha" required>
-        </label><br>
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" name="senha" autocomplete="new-password" required>
 
         <fieldset>
             <legend>Cargos</legend>
             <?php foreach ($cargos as $id => $titulo): ?>
-                <label>
+                <label class="cargo-opcao">
                     <input type="checkbox" name="cargos[]" value="<?= $id ?>"
                         <?= in_array($id, $cargosSelecionados, true) ? 'checked' : '' ?>>
-                    <?= htmlspecialchars($titulo) ?>
-                </label><br>
+                    <span><?= htmlspecialchars($titulo, ENT_QUOTES, 'UTF-8') ?></span>
+                </label>
             <?php endforeach; ?>
         </fieldset>
 
-        <button type="submit">Cadastrar</button>
-        <a href="index.php">Cancelar</a>
+        <div class="cadastro-usuario-acoes">
+            <button class="btn" type="submit">Cadastrar usuário</button>
+            <a class="btn" href="index.php">Voltar ao painel</a>
+        </div>
     </form>
+</section>
 <?php include '../includes/footer.php'; ?>
