@@ -87,7 +87,7 @@ if ($acao && !$bloqueada && $_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':id' => $id,
             ]);
 
-            criarAcaoLog($conexao, 'UPDATE', 'acao', $id, $usuarioId);
+            criarAcaoLog($conexao, 'Edição', 'acao', $id, $usuarioId);
             $conexao->commit();
 
             header('Location: index.php');
