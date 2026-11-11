@@ -36,21 +36,136 @@ main {
     padding: 0 16px;
 }
 
+.pagina-login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: none;
+    margin: 0;
+    padding: 24px 16px 96px;
+    background:
+        linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
+        url("../imagens/fundo_login.jpg") center / cover no-repeat;
+}
+
+.pagina-login > h2 {
+    margin-bottom: 20px;
+    color: #fff;
+    text-align: center;
+    font-size: 32px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
+}
+
+.pagina-escolher-cargo main {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 48px 24px;
+    background:
+        linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+        url("../imagens/fundo_login.jpg") center / cover no-repeat;
+}
+
+.titulo-cargos {
+    margin: 8px 0 14px;
+    color: #fff;
+    font-size: 32px;
+    text-align: center;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.boas-vindas-cargos {
+    color: #fff;
+    font-size: 19px;
+    text-align: center;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.65);
+}
+
+.frame_login {
+    width: 100%;
+    max-width: 840px;
+}
+
+.login_texto {
+    padding: 52px;
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.24);
+}
+
+.login_texto h1,
+.login_texto p {
+    text-align: center;
+}
+
+.login_texto h1 {
+    margin-bottom: 8px;
+    color: #1f3a5f;
+    font-size: 34px;
+}
+
+.login_texto p {
+    margin-bottom: 36px;
+    color: #555;
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+.pagina-login label {
+    font-size: 17px;
+}
+
+.pagina-login .formulario_login {
+    max-width: none;
+    height: auto;
+    min-height: 0;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.pagina-login input {
+    padding: 19px;
+    font-size: 19px;
+}
+
+.pagina-login .campo_email {
+    margin-bottom: 16px;
+}
+
+.pagina-login .btn_login {
+    display: block;
+    width: 100%;
+    max-width: none;
+    margin: 8px 0 0;
+    padding: 18px 20px;
+    font-size: 20px;
+}
+
+@media (max-width: 480px) {
+    .login_texto {
+        padding: 24px;
+    }
+}
+
 footer {
     text-align: center;
     padding: 16px;
-    color: #666;
+    color: #333;
     font-size: 14px;
+    background: #fff;
 }
 
 h2 { margin-bottom: 20px; }
 
 .container_cargos {
     display: grid;
-    grid-template-columns: repeat(2, 250px);
+    grid-template-columns: repeat(2, minmax(250px, 300px));
     justify-content: center;
-    gap: 25px;
-    margin: 40px auto;
+    gap: 48px;
+    margin: 64px auto;
 }
 
 .cards {
@@ -79,8 +194,8 @@ h2 { margin-bottom: 20px; }
     justify-content: center;
     align-items: center;
 
-    min-height: 170px;
-    padding: 20px;
+    min-height: 210px;
+    padding: 28px;
 
     background-color: white;
     color: black;
@@ -109,9 +224,10 @@ h2 { margin-bottom: 20px; }
 
 .card_cargo h3 {
     margin-bottom: 10px;
+    font-size: 20px;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
 
     .container_cargos {
         grid-template-columns: 1fr;
@@ -313,44 +429,65 @@ input, select, textarea {
     margin-bottom: 40px;
 }
 
-.btn_administrador {
+.pagina-administrador main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: none;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 0;
+    padding: 32px 24px 48px;
+    background:
+        linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+        url("../imagens/fundo_login.jpg") center / cover no-repeat;
+}
+
+.menu-administrador {
+    width: 100%;
+    max-width: 860px;
+}
+
+.menu-administrador h2 {
+    margin-bottom: 24px;
+    color: #fff;
+    font-size: 32px;
+    text-align: center;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.card-menu-administrador {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 18px;
+    padding: 36px;
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.24);
+}
+
+.btn-adm {
+    display: flex;
+    flex: 1 1 200px;
+    max-width: 240px;
+    min-height: 58px;
     align-items: center;
+    justify-content: center;
+    padding: 12px 18px;
+    text-align: center;
+    font-weight: bold;
 }
 
-.h1_administrador {
-    display: flex;
-    justify-content: center;
-}
+@media (max-width: 600px) {
+    .card-menu-administrador {
+        padding: 24px 18px;
+    }
 
-.menu_administrador {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-}
-
-.painel_administrador {
-    display: flex;
-    width: 100%;
-    max-width: 800px;
-    height: 100%;
-    padding: 40px;
-    min-height: 150px;
-    margin-top: 30px;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.btn_adm {
-    display: flex;
-    width: 100%;
-    max-width: 200px;
-    height: 50px;
-    justify-content: center;
-    align-items: center;
+    .btn-adm {
+        flex-basis: 100%;
+        max-width: none;
+    }
 }
 
 .conteudo {

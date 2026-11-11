@@ -8,6 +8,7 @@ if (!isset($_SESSION["usuario_id"])) {
 }
 
 $cargos = $_SESSION["cargos"];
+$bodyClass = "pagina-escolher-cargo";
 
 function temCargo($cargo, $cargos) {
     return in_array($cargo, $cargos);
@@ -17,9 +18,9 @@ function temCargo($cargo, $cargos) {
 
 <?php include __DIR__ . '/includes/header.php'; ?>
 
-        <h2>Escolha seu cargo de acesso</h2>
+        <h2 class="titulo-cargos">Escolha seu perfil de acesso</h2>
 
-        <p>
+        <p class="boas-vindas-cargos">
             Bem-vindo, <?php echo htmlspecialchars($_SESSION["usuario_nome"]); ?>!
         </p>
 
