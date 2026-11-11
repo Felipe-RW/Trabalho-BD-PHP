@@ -806,7 +806,7 @@ main.conteudo {
 }
 
 .pagina-usuarios .acoes-status { flex-wrap: nowrap; gap: 8px; margin-left: 0; }
-.pagina-usuarios td .acoes { justify-content: flex-end; flex-wrap: nowrap; column-gap: 68px; }
+.pagina-usuarios td .acoes { justify-content: center; flex-wrap: nowrap; column-gap: 24px; }
 .pagina-usuarios nav { margin-bottom: 24px; }
 .pagina-usuarios nav a { margin: 0; }
 .pagina-usuarios section { margin-bottom: 24px; padding: 24px; border: 1px solid var(--cinza-borda); border-radius: 8px; background: #fafafa; }
@@ -848,6 +848,25 @@ main.conteudo {
     cursor: pointer;
 }
 
+.pagina-usuarios .btn-editar-usuario {
+    display: inline-block;
+    min-width: 112px;
+    padding: 10px 12px;
+    border: 1px solid #c9c9c9;
+    border-radius: 4px;
+    background: #DEDEDE;
+    color: #222;
+    font-weight: 400;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 160ms ease, transform 160ms ease;
+}
+.pagina-usuarios .btn-editar-usuario:hover {
+    border-color: #bdbdbd;
+    background: #c9c9c9;
+    color: #222;
+    transform: translateY(-1px);
+}
 .pagina-usuarios .acoes-status button { min-width: 112px; }
 .pagina-usuarios button:hover { background: var(--cinza-hover); }
 .pagina-usuarios .perigo {
@@ -889,7 +908,7 @@ main.conteudo {
 .pagina-usuarios td:nth-child(3),
 .pagina-usuarios th:nth-child(4),
 .pagina-usuarios td:nth-child(4) { text-align: center; }
-.pagina-usuarios th:last-child { padding: 12px 44px 12px 12px; text-align: right; }
+.pagina-usuarios th:last-child { padding: 12px; text-align: center; }
 .pagina-usuarios th:nth-child(3),
 .pagina-usuarios td:nth-child(3) { padding-left: 0; padding-right: 24px; }
 .pagina-usuarios td .acoes > a { margin-left: 0; }

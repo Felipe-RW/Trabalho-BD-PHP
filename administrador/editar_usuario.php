@@ -146,7 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             $_SESSION['mensagem_usuario'] = $mensagem;
-            header('Location: pagina_de_usuario.php');
+            header('Location: editar_usuario.php');
             exit;
         } catch (InvalidArgumentException $e) {
             $erro = $e->getMessage();
@@ -198,8 +198,7 @@ $formulario = $usuarioEdicao ?: $dados;
 <main>
     <h1>Gerenciar usuários</h1>
     <nav aria-label="Usuários">
-        <a href="pagina_de_usuario.php">Listar usuários</a>
-        <a href="?pagina=cadastrar">Cadastrar usuário</a>
+        <a href="editar_usuario.php">Listar usuários</a>
     </nav>
 
     <?php if ($erro): ?>
@@ -212,7 +211,7 @@ $formulario = $usuarioEdicao ?: $dados;
     <?php if ($pagina === 'cadastrar' || $usuarioEdicao): ?>
         <section>
             <h2><?= $usuarioEdicao ? 'Editar usuário' : 'Cadastrar usuário' ?></h2>
-            <form method="post" action="pagina_de_usuario.php" class="campos">
+            <form method="post" action="editar_usuario.php" class="campos">
                 <input type="hidden" name="csrf" value="<?= escapar($csrf) ?>">
                 <input type="hidden" name="acao" value="<?= $usuarioEdicao ? 'editar' : 'cadastrar' ?>">
                 <?php if ($usuarioEdicao): ?>
@@ -242,7 +241,7 @@ $formulario = $usuarioEdicao ?: $dados;
 
                 <div class="acoes">
                     <button type="submit">Salvar usuário</button>
-                    <a href="pagina_de_usuario.php">Cancelar</a>
+                    <a href="editar_usuario.php">Cancelar</a>
                 </div>
             </form>
         </section>
@@ -254,7 +253,7 @@ $formulario = $usuarioEdicao ?: $dados;
             <label for="busca">Buscar por nome, e-mail ou matrícula</label>
             <input id="busca" name="busca" value="<?= escapar($busca) ?>">
             <button type="submit">Buscar</button>
-            <a href="pagina_de_usuario.php">Limpar</a>
+            <a href="editar_usuario.php">Limpar</a>
         </form>
 
         <div class="tabela">
@@ -278,11 +277,11 @@ $formulario = $usuarioEdicao ?: $dados;
                             <td><?= $usuario['ativo'] ? 'Ativo' : 'Inativo' ?></td>
                             <td>
                                 <div class="acoes">
-                                    <a href="?editar=<?= (int) $usuario['id'] ?>">
+                                    <a class="btn-editar-usuario" href="?editar=<?= (int) $usuario['id'] ?>">
                                         Editar<span class="sr-only"> <?= escapar($usuario['nome']) ?></span>
                                     </a>
                                     <div class="acoes-status">
-                                        <form method="post" action="pagina_de_usuario.php" <?= $usuario['ativo'] && (int) $usuario['id'] !== (int) $adminId ? 'onsubmit="return confirm(\'Desativar este usuário? Ele não poderá mais acessar o sistema.\');"' : '' ?>>
+                                        <form method="post" action="editar_usuario.php" <?= $usuario['ativo'] && (int) $usuario['id'] !== (int) $adminId ? 'onsubmit="return confirm(\'Desativar este usuário? Ele não poderá mais acessar o sistema.\');"' : '' ?>>
                                             <input type="hidden" name="csrf" value="<?= escapar($csrf) ?>">
                                             <input type="hidden" name="acao" value="<?= $usuario['ativo'] ? 'desativar' : 'ativar' ?>">
                                             <input type="hidden" name="id" value="<?= (int) $usuario['id'] ?>">
