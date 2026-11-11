@@ -67,16 +67,30 @@ if ($acao && !$bloqueada && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $stmt = $conexao->prepare('SELECT status_acao FROM acao WHERE id = :id FOR UPDATE');
             $stmt->execute([':id' => $id]);
+<<<<<<< Updated upstream
             if ($stmt->fetchColumn() === 'Aprovado') {
+=======
+            $statusAtual = $stmt->fetchColumn();
+            if ($statusAtual === false) {
+                throw new RuntimeException('Ação não encontrada.');
+            }
+            if ($statusAtual === 'Aprovado') {
+>>>>>>> Stashed changes
                 throw new RuntimeException('Esta ação já foi aprovada e não pode ser editada.');
             }
 
+            $novoStatus = $statusAtual === 'Negado' ? 'Em Avaliação' : $statusAtual;
             $stmt = $conexao->prepare(
                 'UPDATE acao
                  SET titulo = :titulo,
                      descricao = :descricao,
                      data_de_realizacao = :data,
+<<<<<<< Updated upstream
                      categoria_id = :categoria
+=======
+                     categoria_id = :categoria,
+                     status_acao = :status
+>>>>>>> Stashed changes
                  WHERE id = :id'
             );
             $stmt->execute([
@@ -84,6 +98,7 @@ if ($acao && !$bloqueada && $_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':descricao' => $descricao,
                 ':data' => $dataStr,
                 ':categoria' => $categoriaId,
+                ':status' => $novoStatus,
                 ':id' => $id,
             ]);
 
