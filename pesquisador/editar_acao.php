@@ -67,7 +67,8 @@ if ($acao && !$bloqueada && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $stmt = $conexao->prepare('SELECT status_acao FROM acao WHERE id = :id FOR UPDATE');
             $stmt->execute([':id' => $id]);
-            if ($stmt->fetchColumn() === 'Aprovado') {
+            $statusAtual = $stmt->fetchColumn();
+            if ($statusAtual === 'Aprovado') {
                 throw new RuntimeException('Esta ação já foi aprovada e não pode ser editada.');
             }
 
@@ -76,7 +77,11 @@ if ($acao && !$bloqueada && $_SERVER['REQUEST_METHOD'] === 'POST') {
                  SET titulo = :titulo,
                      descricao = :descricao,
                      data_de_realizacao = :data,
-                     categoria_id = :categoria
+                     categoria_id = :categoria,
+                     status_acao = CASE
+                         WHEN status_acao = \'Negado\' THEN \'Em Avaliação\'
+                         ELSE status_acao
+                     END
                  WHERE id = :id'
             );
             $stmt->execute([
