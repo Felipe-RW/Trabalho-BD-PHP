@@ -86,9 +86,19 @@ $acoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         </td>
 
                                         <td>
-                                            <?= !empty($acao['motivo'])
-                                                ? htmlspecialchars($acao['motivo'])
-                                                : 'Ação Aprovada' ?>
+                                            <?php if ($acao['status_acao'] === 'Em Avaliação'): ?>
+
+                                                Aguardando Avaliação
+
+                                            <?php elseif ($acao['status_acao'] === 'Negado'): ?>
+
+                                                <?= htmlspecialchars($acao['motivo']) ?>
+
+                                            <?php else: ?>
+
+                                                Ação Aprovada
+
+                                            <?php endif; ?>
                                         </td>
 
                                         <td>
