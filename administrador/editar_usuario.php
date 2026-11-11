@@ -182,24 +182,10 @@ $termoBusca = '%' . $busca . '%';
 $consulta->execute([$termoBusca, $termoBusca, $termoBusca]);
 $usuarios = $consulta->fetchAll(PDO::FETCH_ASSOC);
 $formulario = $usuarioEdicao ?: $dados;
+$classeBody = 'pagina-usuarios';
 ?>
-<!doctype html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Gerenciar usuários</title>
-    <link rel="stylesheet" href="../css/estilo.css">
-</head>
-<body class="pagina-usuarios">
-<header>
-    <h1>Embrapa</h1>
-    <a href="index.php">Painel administrativo</a></header>
-<main>
+<?php include '../includes/header.php'; ?>
     <h1>Gerenciar usuários</h1>
-    <nav aria-label="Usuários">
-        <a href="editar_usuario.php">Listar usuários</a>
-    </nav>
 
     <?php if ($erro): ?>
         <p class="erro" role="alert"><?= escapar($erro) ?></p>
@@ -253,7 +239,7 @@ $formulario = $usuarioEdicao ?: $dados;
             <label for="busca">Buscar por nome, e-mail ou matrícula</label>
             <input id="busca" name="busca" value="<?= escapar($busca) ?>">
             <button type="submit">Buscar</button>
-            <a href="editar_usuario.php">Limpar</a>
+            <a class="btn-limpar-busca" href="editar_usuario.php">Limpar</a>
         </form>
 
         <div class="tabela">
@@ -277,19 +263,21 @@ $formulario = $usuarioEdicao ?: $dados;
                             <td><?= $usuario['ativo'] ? 'Ativo' : 'Inativo' ?></td>
                             <td>
                                 <div class="acoes">
-                                    <a class="btn-editar-usuario" href="?editar=<?= (int) $usuario['id'] ?>">
-                                        Editar<span class="sr-only"> <?= escapar($usuario['nome']) ?></span>
-                                    </a>
-                                    <div class="acoes-status">
-                                        <form method="post" action="editar_usuario.php" <?= $usuario['ativo'] && (int) $usuario['id'] !== (int) $adminId ? 'onsubmit="return confirm(\'Desativar este usuário? Ele não poderá mais acessar o sistema.\');"' : '' ?>>
-                                            <input type="hidden" name="csrf" value="<?= escapar($csrf) ?>">
-                                            <input type="hidden" name="acao" value="<?= $usuario['ativo'] ? 'desativar' : 'ativar' ?>">
-                                            <input type="hidden" name="id" value="<?= (int) $usuario['id'] ?>">
-                                            <button type="submit" class="<?= $usuario['ativo'] ? 'perigo' : 'ativar' ?>" <?= $usuario['ativo'] && (int) $usuario['id'] === (int) $adminId ? 'disabled' : '' ?>>
-                                                <?= $usuario['ativo'] ? 'Desativar' : 'Ativar' ?><span class="sr-only"> <?= escapar($usuario['nome']) ?></span>
-                                            </button>
-                                        </form>
-                                    </div>
+                                    <?php if ((int) $usuario['id'] !== (int) $adminId): ?>
+                                        <a class="btn-editar-usuario" href="?editar=<?= (int) $usuario['id'] ?>">
+                                            Editar<span class="sr-only"> <?= escapar($usuario['nome']) ?></span>
+                                        </a>
+                                        <div class="acoes-status">
+                                            <form method="post" action="editar_usuario.php" <?= $usuario['ativo'] ? 'onsubmit="return confirm(\'Desativar este usuário? Ele não poderá mais acessar o sistema.\');"' : '' ?>>
+                                                <input type="hidden" name="csrf" value="<?= escapar($csrf) ?>">
+                                                <input type="hidden" name="acao" value="<?= $usuario['ativo'] ? 'desativar' : 'ativar' ?>">
+                                                <input type="hidden" name="id" value="<?= (int) $usuario['id'] ?>">
+                                                <button type="submit" class="<?= $usuario['ativo'] ? 'perigo' : 'ativar' ?>">
+                                                    <?= $usuario['ativo'] ? 'Desativar' : 'Ativar' ?><span class="sr-only"> <?= escapar($usuario['nome']) ?></span>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
                             </td>
                         </tr>
@@ -301,6 +289,7 @@ $formulario = $usuarioEdicao ?: $dados;
             </table>
         </div>
     </section>
-</main>
-</body>
-</html>
+    <div class="acoes voltar-usuarios">
+        <a class="btn-voltar-usuarios" href="index.php"><span aria-hidden="true">←</span> Voltar ao painel</a>
+    </div>
+<?php include '../includes/footer.php'; ?>

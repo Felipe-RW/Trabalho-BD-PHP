@@ -791,7 +791,7 @@ main.conteudo {
     padding: 0 16px;
 }
 
-.pagina-usuarios h1 { font-size: 28px; }
+.pagina-usuarios main > h1 { margin-bottom: 24px; font-size: 28px; }
 .pagina-usuarios h2 { margin: 0 0 20px; font-size: 21px; }
 .pagina-usuarios a { color: #444; text-underline-offset: 3px; }
 
@@ -847,6 +847,17 @@ main.conteudo {
     color: #222;
     cursor: pointer;
 }
+.pagina-usuarios .btn-limpar-busca {
+    display: inline-block;
+    padding: 10px 12px;
+    border: 1px solid #3b3b3b;
+    border-radius: 4px;
+    background: var(--cinza-botao);
+    color: #222;
+    font: inherit;
+    text-decoration: none;
+}
+.pagina-usuarios .btn-limpar-busca:hover { background: var(--cinza-hover); }
 
 .pagina-usuarios .btn-editar-usuario {
     display: inline-block;
@@ -865,6 +876,29 @@ main.conteudo {
     border-color: #bdbdbd;
     background: #c9c9c9;
     color: #222;
+    transform: translateY(-1px);
+}
+.pagina-usuarios .voltar-usuarios { margin-top: 16px; }
+.pagina-usuarios .btn-voltar-usuarios {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: 1px solid #c9c9c9;
+    border-radius: 6px;
+    background: #DEDEDE;
+    color: #222;
+    font-weight: 400;
+    text-align: center;
+    text-decoration: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+    transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+.pagina-usuarios .btn-voltar-usuarios:hover {
+    border-color: #bdbdbd;
+    background: #c9c9c9;
+    color: #222;
+    box-shadow: 0 4px 9px rgba(0, 0, 0, 0.16);
     transform: translateY(-1px);
 }
 .pagina-usuarios .acoes-status button { min-width: 112px; }
