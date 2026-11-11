@@ -769,33 +769,20 @@ main.conteudo {
     --cinza-hover: #c9c9c9;
     color: #333;
     background: #f1f1f1;
-    font: 16px/1.5 Arial, sans-serif;
 }
-
-.pagina-usuarios header {
-    justify-content: space-between;
-    gap: 16px;
-    padding: 16px 32px;
-    line-height: normal;
-    background: #2c527f;
-    color: #fff;
-}
-
-.pagina-usuarios header h1 { font-size: 2em; }
-.pagina-usuarios header a { color: #fff; }
-
 .pagina-usuarios main {
     width: 100%;
     max-width: 1152px;
     margin: 32px auto;
     padding: 0 16px;
+    font: 16px/1.5 Arial, sans-serif;
 }
 
 .pagina-usuarios main > h1 { margin-bottom: 24px; font-size: 28px; }
 .pagina-usuarios h2 { margin: 0 0 20px; font-size: 21px; }
-.pagina-usuarios a { color: #444; text-underline-offset: 3px; }
+.pagina-usuarios main a { color: #444; text-underline-offset: 3px; }
 
-.pagina-usuarios nav,
+.pagina-usuarios main nav,
 .pagina-usuarios .acoes,
 .pagina-usuarios .acoes-status,
 .pagina-usuarios .busca {
@@ -807,8 +794,8 @@ main.conteudo {
 
 .pagina-usuarios .acoes-status { flex-wrap: nowrap; gap: 8px; margin-left: 0; }
 .pagina-usuarios td .acoes { justify-content: center; flex-wrap: nowrap; column-gap: 24px; }
-.pagina-usuarios nav { margin-bottom: 24px; }
-.pagina-usuarios nav a { margin: 0; }
+.pagina-usuarios main nav { margin-bottom: 24px; }
+.pagina-usuarios main nav a { margin: 0; }
 .pagina-usuarios section { margin-bottom: 24px; padding: 24px; border: 1px solid var(--cinza-borda); border-radius: 8px; background: #fafafa; }
 
 .pagina-usuarios form {

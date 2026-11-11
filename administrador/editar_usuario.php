@@ -173,10 +173,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $cargos = $db->query('SELECT id, titulo FROM cargo ORDER BY titulo')->fetchAll(PDO::FETCH_ASSOC);
 $busca = is_string($_GET['busca'] ?? null) ? trim($_GET['busca']) : '';
 $consulta = $db->prepare(
-    'SELECT id, nome, email, matricula, ativo
-     FROM usuario
-     WHERE nome LIKE ? OR email LIKE ? OR CAST(matricula AS CHAR) LIKE ?
-     ORDER BY nome, id'
+    'SELECT u.id, u.nome, u.email, u.matricula, u.ativo,
+            EXISTS (
+                SELECT 1
+                FROM usuario_cargo uc
+                JOIN cargo c ON c.id = uc.cargo_id
+                WHERE uc.usuario_id = u.id AND c.titulo = \'Administrador\'
+            ) AS is_admin
+     FROM usuario u
+     WHERE u.nome LIKE ? OR u.email LIKE ? OR CAST(u.matricula AS CHAR) LIKE ?
+     ORDER BY u.nome, u.id'
 );
 $termoBusca = '%' . $busca . '%';
 $consulta->execute([$termoBusca, $termoBusca, $termoBusca]);
@@ -263,7 +269,7 @@ $classeBody = 'pagina-usuarios';
                             <td><?= $usuario['ativo'] ? 'Ativo' : 'Inativo' ?></td>
                             <td>
                                 <div class="acoes">
-                                    <?php if ((int) $usuario['id'] !== (int) $adminId): ?>
+                                    <?php if (!(bool) $usuario['is_admin']): ?>
                                         <a class="btn-editar-usuario" href="?editar=<?= (int) $usuario['id'] ?>">
                                             Editar<span class="sr-only"> <?= escapar($usuario['nome']) ?></span>
                                         </a>
