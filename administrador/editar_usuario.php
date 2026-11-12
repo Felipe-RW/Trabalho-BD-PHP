@@ -106,26 +106,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (!$id) {
                     throw new InvalidArgumentException('Usuário inválido.');
                 }
-                $cargosRecebidos = $_POST['cargos'] ?? [];
 
-                if (!is_array($cargosRecebidos)) {
-                    $cargosRecebidos = [];
-                }
-
-                $cargosSelecionados = array_values(array_unique(
-                    array_filter(
-                        array_map('intval', $cargosRecebidos),
-                        fn($cargoId) => isset($cargos[$cargoId])
-                    )
-                ));
-
-                if (!$cargosSelecionados) {
-                    throw new InvalidArgumentException(
-                        'Selecione pelo menos um cargo.'
+                if ((int) $id === (int) $adminId) {
+                    $consulta = $db->prepare(
+                        'SELECT cargo_id
+                        FROM usuario_cargo
+                        WHERE usuario_id = ?'
                     );
+
+                    $consulta->execute([$id]);
+
+                    $cargosSelecionados = array_map(
+                        'intval',
+                        $consulta->fetchAll(PDO::FETCH_COLUMN)
+                    );
+
+                } else {
+                    $cargosRecebidos = $_POST['cargos'] ?? [];
+
+                    if (!is_array($cargosRecebidos)) {
+                        $cargosRecebidos = [];
+                    }
+
+                    $cargosSelecionados = array_values(array_unique(
+                        array_filter(
+                            array_map('intval', $cargosRecebidos),
+                            fn($cargoId) => isset($cargos[$cargoId])
+                        )
+                    ));
+
+                    if (!$cargosSelecionados) {
+                        throw new InvalidArgumentException(
+                            'Selecione pelo menos um cargo.'
+                        );
+                    }
                 }
 
-                $consulta = $db->prepare('SELECT id, nome, email, matricula, ativo FROM usuario WHERE id = ?');
+                $consulta = $db->prepare('SELECT id, nome, email, matricula, ativo FROM usuario WHERE id = ?');//
                 $consulta->execute([$id]);
                 $usuarioEdicao = $consulta->fetch(PDO::FETCH_ASSOC);
                 if (!$usuarioEdicao) {
@@ -157,18 +174,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'UPDATE usuario SET nome = ?, email = ?, matricula = ? WHERE id = ?'
                 );
                 $consulta->execute([$dados['nome'], $dados['email'], $matricula, $id]);
-                $consulta = $db->prepare(
-                    'DELETE FROM usuario_cargo WHERE usuario_id = ?'
-                );
-                $consulta->execute([$id]);
+                if ((int) $id !== (int) $adminId) {
+                    $consulta = $db->prepare(
+                        'DELETE FROM usuario_cargo WHERE usuario_id = ?'
+                    );
+                    $consulta->execute([$id]);
 
-                $consultaCargo = $db->prepare(
-                    'INSERT INTO usuario_cargo (usuario_id, cargo_id)
-                    VALUES (?, ?)'
-                );
+                    $consultaCargo = $db->prepare(
+                        'INSERT INTO usuario_cargo (usuario_id, cargo_id)
+                        VALUES (?, ?)'
+                    );
 
-                foreach ($cargosSelecionados as $cargoId) {
-                    $consultaCargo->execute([$id, $cargoId]);
+                    foreach ($cargosSelecionados as $cargoId) {
+                        $consultaCargo->execute([$id, $cargoId]);
+                    }
                 }
                 criarAcaoLog($db, 'Edição', 'usuario', (int) $id, (int) $adminId);
                 $db->commit();
@@ -189,28 +208,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 } elseif (isset($_GET['editar'])) {
-    $id = filter_var($_GET['editar'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
-    if ($id === 1) {
+    $id = filter_var(
+        $_GET['editar'],
+        FILTER_VALIDATE_INT,
+        ['options' => ['min_range' => 1]]
+    );
+
+    if (!$id) {
+        $erro = 'Usuário inválido.';
+    } elseif ((int) $id === 1) {
         $erro = 'O administrador do sistema (ID 1) não pode ser alterado.';
-    } elseif ($id) {
-        $consulta = $db->prepare('SELECT id, nome, email, matricula, ativo FROM usuario WHERE id = ?');
+    } else {
+        $consulta = $db->prepare(
+            'SELECT id, nome, email, matricula, ativo
+             FROM usuario
+             WHERE id = ?'
+        );
+
         $consulta->execute([$id]);
         $usuarioEdicao = $consulta->fetch(PDO::FETCH_ASSOC);
-    }
-    if (!$usuarioEdicao && $id !== 1) {
-        $erro = 'Usuário não encontrado.';
-    }
-    if ($usuarioEdicao) {
-        $consulta = $db->prepare(
-            'SELECT cargo_id FROM usuario_cargo WHERE usuario_id = ?'
-        );
 
-        $consulta->execute([$id]);
+        if (!$usuarioEdicao) {
+            $erro = 'Usuário não encontrado.';
+        } else {
+            $consulta = $db->prepare(
+                'SELECT cargo_id
+                 FROM usuario_cargo
+                 WHERE usuario_id = ?'
+            );
 
-        $cargosSelecionados = array_map(
-            'intval',
-            $consulta->fetchAll(PDO::FETCH_COLUMN)
-        );
+            $consulta->execute([$id]);
+
+            $cargosSelecionados = array_map(
+                'intval',
+                $consulta->fetchAll(PDO::FETCH_COLUMN)
+            );
+        }
     }
 }
 
@@ -251,17 +284,29 @@ $classeBody = 'pagina-usuarios';
                 <input id="email" name="email" type="email" maxlength="100" required value="<?= escapar($formulario['email']) ?>">
                 <label for="matricula">Matrícula</label>
                 <input id="matricula" name="matricula" type="number" min="1" max="2147483647" required value="<?= escapar($formulario['matricula']) ?>">
-                <fieldset>
-                    <legend>Cargos</legend>
+                <?php if ((int) $usuarioEdicao['id'] !== (int) $adminId): ?>
+                    <fieldset>
+                        <legend>Cargos</legend>
 
-                    <?php foreach ($cargos as $idCargo => $titulo): ?>
-                        <label class="cargo-opcao">
-                            <input type="checkbox" name="cargos[]" value="<?= (int) $idCargo ?>" <?= in_array((int) $idCargo, $cargosSelecionados, true) ? 'checked' : '' ?>>
-
-                            <span><?= escapar($titulo) ?></span>
-                        </label>
-                    <?php endforeach; ?>
-                </fieldset>
+                        <?php foreach ($cargos as $idCargo => $titulo): ?>
+                            <label class="cargo-opcao">
+                                <input
+                                    type="checkbox"
+                                    name="cargos[]"
+                                    value="<?= (int) $idCargo ?>"
+                                    <?= in_array(
+                                        (int) $idCargo,
+                                        $cargosSelecionados,
+                                        true
+                                    ) ? 'checked' : '' ?>
+                                >
+                                <span><?= escapar($titulo) ?></span>
+                            </label>
+                        <?php endforeach; ?>
+                    </fieldset>
+                <?php else: ?>
+                    <p>Seus cargos não podem ser alterados por esta tela.</p>
+                <?php endif; ?>
 
                 <div class="acoes">
                     <button type="submit">Salvar alterações</button>
@@ -301,7 +346,10 @@ $classeBody = 'pagina-usuarios';
                             <td><?= $usuario['ativo'] ? 'Ativo' : 'Inativo' ?></td>
                             <td>
                                 <div class="acoes">
-                                    <?php if ((int) $usuario['id'] !== 1): ?>
+                                    <?php if (
+                                        (int) $usuario['id'] !== 1 &&
+                                        (int) $usuario['id'] !== (int) $adminId
+                                    ): ?>
                                         <a class="btn-editar-usuario" href="?editar=<?= (int) $usuario['id'] ?>">
                                             Editar<span class="sr-only"> <?= escapar($usuario['nome']) ?></span>
                                         </a>
