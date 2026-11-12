@@ -8,7 +8,7 @@ if (!isset($_SESSION["usuario_id"])) {
 }
 
 $cargos = $_SESSION["cargos"];
-$bodyClass = "pagina-escolher-cargo";
+$classeBody = "pagina-escolher-cargo";
 
 function temCargo($cargo, $cargos) {
     return in_array($cargo, $cargos);

@@ -127,10 +127,12 @@ $validacaoAtual->execute([
     ':acao_id' => $acaoId,
 ]);
 $motivoAtual = $validacaoAtual->fetchColumn();
+$classeBody = 'pagina-validador';
 ?>
 
-<?php include '../includes/header.php'; ?>
-        <div class="topo">
+<?php include __DIR__ . '/../includes/header.php'; ?>
+    <section class="painel-validador">
+        <div class="topo-validador">
             <h2>Validar ação</h2>
             <a class="btn" href="index.php">Voltar à lista</a>
         </div>
@@ -143,6 +145,7 @@ $motivoAtual = $validacaoAtual->fetchColumn();
             <p class="aviso" role="alert"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></p>
         <?php endif; ?>
 
+        <div class="tabela-validador">
         <table>
             <tbody>
                 <tr>
@@ -168,13 +171,18 @@ $motivoAtual = $validacaoAtual->fetchColumn();
             </tbody>
         </table>
 
-        <form method="post" action="validar_acao.php">
+        </div>
+
+        <form class="formulario-validacao" method="post" action="validar_acao.php">
             <input type="hidden" name="id" value="<?= (int) $acao['id'] ?>">
 
             <label for="motivo_rejeicao">Motivo (opcional):</label>
             <textarea id="motivo_rejeicao" name="motivo_rejeicao" rows="4"></textarea>
 
-            <button class="btn" type="submit" name="decisao" value="Aprovado">Aprovar</button>
-            <button class="btn btn-perigo" type="submit" name="decisao" value="Negado">Negar</button>
+            <div class="acoes-validacao">
+                <button class="btn" type="submit" name="decisao" value="Aprovado">Aprovar</button>
+                <button class="btn btn-perigo" type="submit" name="decisao" value="Negado">Negar</button>
+            </div>
         </form>
+    </section>
 <?php include '../includes/footer.php'; ?>

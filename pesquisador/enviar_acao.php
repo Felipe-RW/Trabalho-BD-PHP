@@ -100,90 +100,67 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+$classeBody = 'pagina-criar-acao';
 ?>
 
-<?php include '../includes/header.php'; ?>
+<?php include __DIR__ . '/../includes/header.php'; ?>
 
-<main>
-    <div class="enviar_acao_painel">
-
-        <h1>Enviar Ação</h1>
-
-        <?php if (!empty($erro)): ?>
-            <p style="color: red;" role="alert">
-                <?= htmlspecialchars($erro) ?>
-            </p>
-        <?php endif; ?>
-
-        <br>
-
-        <form method="POST" class="enviar_acao_painel">
-
-            <label>Título da Ação:</label>
-
-            <input
-                type="text"
-                name="titulo"
-                maxlength="100"
-                value="<?= htmlspecialchars($titulo) ?>"
-                required
-            >
-
-            <br>
-
-            <label>Categoria:</label>
-
-            <select name="categoria_id" required>
-
-                <option value="">Selecione uma categoria</option>
-
-                <?php foreach ($categorias as $categoria): ?>
-
-                    <option
-                        value="<?= $categoria['id'] ?>"
-                        <?= ($categoria_id == $categoria['id']) ? 'selected' : '' ?>
-                    >
-                        <?= htmlspecialchars($categoria['nome']) ?>
-                    </option>
-
-                <?php endforeach; ?>
-
-            </select>
-
-            <br>
-
-            <label>Data de realização:</label>
-
-            <input
-                type="date"
-                name="data_de_realizacao"
-                value="<?= htmlspecialchars($data_de_realizacao) ?>"
-                required
-            >
-
-            <br>
-
-            <label>Descrição:</label>
-
-            <textarea name="descricao" required><?= htmlspecialchars($descricao) ?></textarea>
-
-            <br>
-
-            <div class="acoes-formulario">
-
-                <button type="submit" class="btn">
-                    Salvar
-                </button>
-
-                <a href="index.php" class="btn">
-                    Cancelar
-                </a>
-
-            </div>
-
-        </form>
-
+<section class="criar-acao-painel">
+    <div class="cabecalho-criar-acao">
+        <div>
+            <p class="rotulo-criar-acao">Área do pesquisador</p>
+            <h1>Criar nova ação</h1>
+            <p class="descricao-criar-acao">Preencha as informações para enviar uma ação para avaliação.</p>
+        </div>
+        <a href="index.php" class="btn btn-cancelar-criar-acao">Voltar</a>
     </div>
-</main>
 
-<?php include '../includes/footer.php'; ?>
+    <?php if (!empty($erro)): ?>
+        <p class="erro-criar-acao" role="alert">
+            <?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?>
+        </p>
+    <?php endif; ?>
+
+    <form method="POST" class="formulario-criar-acao">
+        <label for="titulo">Título da ação</label>
+        <input
+            type="text"
+            id="titulo"
+            name="titulo"
+            maxlength="100"
+            value="<?= htmlspecialchars($titulo, ENT_QUOTES, 'UTF-8') ?>"
+            required
+        >
+
+        <label for="categoria_id">Categoria</label>
+        <select id="categoria_id" name="categoria_id" required>
+            <option value="">Selecione uma categoria</option>
+            <?php foreach ($categorias as $categoria): ?>
+                <option
+                    value="<?= (int) $categoria['id'] ?>"
+                    <?= ($categoria_id == $categoria['id']) ? 'selected' : '' ?>
+                >
+                    <?= htmlspecialchars($categoria['nome'], ENT_QUOTES, 'UTF-8') ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+
+        <label for="data_de_realizacao">Data de realização</label>
+        <input
+            type="date"
+            id="data_de_realizacao"
+            name="data_de_realizacao"
+            value="<?= htmlspecialchars($data_de_realizacao, ENT_QUOTES, 'UTF-8') ?>"
+            required
+        >
+
+        <label for="descricao">Descrição</label>
+        <textarea id="descricao" name="descricao" required><?= htmlspecialchars($descricao, ENT_QUOTES, 'UTF-8') ?></textarea>
+
+        <div class="acoes-formulario">
+            <button type="submit" class="btn">Enviar para avaliação</button>
+        </div>
+    </form>
+</section>
+
+<?php include __DIR__ . '/../includes/footer.php'; ?>

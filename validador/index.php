@@ -10,13 +10,19 @@ $stmt = $conexao->query(
 	 ORDER BY a.id DESC'
 );
 $acoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$classeBody = 'pagina-validador';
 ?>
 
-<?php include '../includes/header.php'; ?>
-	<div class="topo">
-		<h2>Ações para validação</h2>
-	</div>
+<?php include __DIR__ . '/../includes/header.php'; ?>
+	<section class="painel-validador">
+		<div class="topo-validador">
+			<div>
+				<h2>Ações para validação</h2>
+				<p>Revise as ações enviadas e registre sua decisão.</p>
+			</div>
+		</div>
 
+		<div class="tabela-validador">
 		<table>
 			<thead>
 				<tr>
@@ -48,4 +54,6 @@ $acoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 				<?php endforeach; ?>
 			</tbody>
 		</table>
+		</div>
+	</section>
 <?php include '../includes/footer.php'; ?>

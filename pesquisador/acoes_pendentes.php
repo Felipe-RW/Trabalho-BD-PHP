@@ -33,18 +33,18 @@ $stmt->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
 $stmt->execute();
 
 $acoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$classeBody = 'pagina-pesquisador-acoes';
 ?>
 
-<?php include '../includes/header.php'; ?>
+<?php include __DIR__ . '/../includes/header.php'; ?>
 
-<body>
-    <main class="conteudo pagina-minhas-acoes">
+    <section class="conteudo pagina-minhas-acoes">
         <div class="painel-pesquisador">
             <div class="cabecalho-pesquisador">
                 <section class="boas-vindas">
-                    <h2 class="tabela_gap">Área do pesquisador</h2>
-                    <h2 class="tabela_gap">Minhas Ações</h2>
-                    <p>Acompanhe a situação das suas ações aqui.</p>
+                    <p class="etiqueta-pesquisador">Área do pesquisador</p>
+                    <h2 class="tabela_gap">Minhas ações</h2>
+                    <p class="descricao-boas-vindas">Consulte o andamento das ações que você enviou e veja os detalhes de cada avaliação.</p>
                     <a class="btn btn-acoes" href="index.php">Voltar</a>
                 </section>
             </div>
@@ -129,7 +129,5 @@ $acoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </div>
             </section>
         </div>
-    </main>
-</body>
-</html>
-<?php include '../includes/footer.php'; ?>
+    </section>
+<?php include __DIR__ . '/../includes/footer.php'; ?>
