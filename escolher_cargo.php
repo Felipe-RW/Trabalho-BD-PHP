@@ -36,7 +36,7 @@ function temCargo($cargo, $cargos) {
             <?php else: ?>
 
                 <div class="card_cargo bloqueado">
-                    <h3>🔒 Administrador</h3>
+                    <h3> Administrador</h3>
                     <p>Você não possui acesso a este cargo.</p>
                 </div>
 
@@ -53,7 +53,7 @@ function temCargo($cargo, $cargos) {
             <?php else: ?>
 
                 <div class="card_cargo bloqueado">
-                    <h3>🔒 Comitê</h3>
+                    <h3> Comitê</h3>
                     <p>Você não possui acesso a este cargo.</p>
                 </div>
 
@@ -70,7 +70,7 @@ function temCargo($cargo, $cargos) {
             <?php else: ?>
 
                 <div class="card_cargo bloqueado">
-                    <h3>🔒 Pesquisador</h3>
+                    <h3> Pesquisador</h3>
                     <p>Você não possui acesso a este cargo.</p>
                 </div>
 
@@ -87,7 +87,7 @@ function temCargo($cargo, $cargos) {
             <?php else: ?>
 
                 <div class="card_cargo bloqueado">
-                    <h3>🔒 Validador</h3>
+                    <h3> Validador</h3>
                     <p>Você não possui acesso a este cargo.</p>
                 </div>
 

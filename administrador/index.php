@@ -1,5 +1,5 @@
 <?php
-$bodyClass = 'pagina-administrador';
+$classeBody = 'pagina-administrador';
 include __DIR__ . '/../includes/header.php';
 ?>
 
