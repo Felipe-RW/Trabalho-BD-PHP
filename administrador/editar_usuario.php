@@ -39,6 +39,9 @@ $mensagem = $_SESSION['mensagem_usuario'] ?? '';
 unset($_SESSION['mensagem_usuario']);
 $dados = ['nome' => '', 'email' => '', 'matricula' => ''];
 $usuarioEdicao = null;
+$cargos = $db->query(
+    'SELECT id, titulo FROM cargo ORDER BY titulo'
+)->fetchAll(PDO::FETCH_KEY_PAIR);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $acao = is_string($_POST['acao'] ?? null) ? $_POST['acao'] : '';
@@ -47,6 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach ($dados as $campo => $valor) {
         $dados[$campo] = is_string($_POST[$campo] ?? null) ? trim($_POST[$campo]) : '';
     }
+
+    $cargosSelecionados = [];
 
     if (!is_string($_POST['csrf'] ?? null) || !hash_equals($csrf, $_POST['csrf'])) {
         $erro = 'Solicitação inválida. Recarregue a página.';
@@ -101,6 +106,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (!$id) {
                     throw new InvalidArgumentException('Usuário inválido.');
                 }
+                $cargosRecebidos = $_POST['cargos'] ?? [];
+
+                if (!is_array($cargosRecebidos)) {
+                    $cargosRecebidos = [];
+                }
+
+                $cargosSelecionados = array_values(array_unique(
+                    array_filter(
+                        array_map('intval', $cargosRecebidos),
+                        fn($cargoId) => isset($cargos[$cargoId])
+                    )
+                ));
+
+                if (!$cargosSelecionados) {
+                    throw new InvalidArgumentException(
+                        'Selecione pelo menos um cargo.'
+                    );
+                }
+
                 $consulta = $db->prepare('SELECT id, nome, email, matricula, ativo FROM usuario WHERE id = ?');
                 $consulta->execute([$id]);
                 $usuarioEdicao = $consulta->fetch(PDO::FETCH_ASSOC);
@@ -133,6 +157,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'UPDATE usuario SET nome = ?, email = ?, matricula = ? WHERE id = ?'
                 );
                 $consulta->execute([$dados['nome'], $dados['email'], $matricula, $id]);
+                $consulta = $db->prepare(
+                    'DELETE FROM usuario_cargo WHERE usuario_id = ?'
+                );
+                $consulta->execute([$id]);
+
+                $consultaCargo = $db->prepare(
+                    'INSERT INTO usuario_cargo (usuario_id, cargo_id)
+                    VALUES (?, ?)'
+                );
+
+                foreach ($cargosSelecionados as $cargoId) {
+                    $consultaCargo->execute([$id, $cargoId]);
+                }
                 criarAcaoLog($db, 'Edição', 'usuario', (int) $id, (int) $adminId);
                 $db->commit();
                 $mensagem = 'Usuário atualizado.';
@@ -162,6 +199,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     if (!$usuarioEdicao && $id !== 1) {
         $erro = 'Usuário não encontrado.';
+    }
+    if ($usuarioEdicao) {
+        $consulta = $db->prepare(
+            'SELECT cargo_id FROM usuario_cargo WHERE usuario_id = ?'
+        );
+
+        $consulta->execute([$id]);
+
+        $cargosSelecionados = array_map(
+            'intval',
+            $consulta->fetchAll(PDO::FETCH_COLUMN)
+        );
     }
 }
 
@@ -202,6 +251,17 @@ $classeBody = 'pagina-usuarios';
                 <input id="email" name="email" type="email" maxlength="100" required value="<?= escapar($formulario['email']) ?>">
                 <label for="matricula">Matrícula</label>
                 <input id="matricula" name="matricula" type="number" min="1" max="2147483647" required value="<?= escapar($formulario['matricula']) ?>">
+                <fieldset>
+                    <legend>Cargos</legend>
+
+                    <?php foreach ($cargos as $idCargo => $titulo): ?>
+                        <label class="cargo-opcao">
+                            <input type="checkbox" name="cargos[]" value="<?= (int) $idCargo ?>" <?= in_array((int) $idCargo, $cargosSelecionados, true) ? 'checked' : '' ?>>
+
+                            <span><?= escapar($titulo) ?></span>
+                        </label>
+                    <?php endforeach; ?>
+                </fieldset>
 
                 <div class="acoes">
                     <button type="submit">Salvar alterações</button>
