@@ -31,7 +31,7 @@ unset($_SESSION['acao_cadastrada']);
 
 <?php include __DIR__ . '/../includes/header.php'; ?>
 
-    <main class="conteudo">
+    <main class="conteudo pagina-inicial-pesquisador">
 
         <div class="painel-pesquisador">
             <?php if ($acao_cadastrada): ?>
