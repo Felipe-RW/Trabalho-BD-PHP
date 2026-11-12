@@ -49,7 +49,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     } else {
 
-        echo "Email ou senha incorretos, ou usuário desativado.";
+        header("Location: ../index.html?erro=login");
+        exit();
 
     }
 

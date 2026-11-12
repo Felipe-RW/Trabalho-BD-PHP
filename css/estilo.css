@@ -303,6 +303,15 @@ input, select, textarea {
     min-height: 400px;
 }
 
+.mensagem-erro-login {
+    margin-bottom: 16px;
+    padding: 16px;
+    border-radius: 4px;
+    color: #333;
+    background: #e4e4e4;
+    border-left: 4px solid #777;
+}
+
 .btn_login {
     width: 100%;
     max-width: 200px;
