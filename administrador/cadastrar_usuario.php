@@ -37,8 +37,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $erros[] = 'Informe um e-mail válido.';
     }
 
-    if (!ctype_digit($matricula)) {
-        $erros[] = 'A matrícula deve conter apenas números.';
+    $matriculaNumerica = ctype_digit($matricula)
+        ? filter_var((int) $matricula, FILTER_VALIDATE_INT, [
+            'options' => ['min_range' => 1, 'max_range' => 2147483647],
+        ])
+        : false;
+
+    if ($matriculaNumerica === false) {
+        $erros[] = 'A matrícula deve ser um número inteiro positivo válido.';
     }
 
     if ($senha === '') {
@@ -51,6 +57,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!$erros) {
         try {
+            $stmt = $conexao->prepare(
+                'SELECT id FROM usuario WHERE email = :email LIMIT 1'
+            );
+            $stmt->execute([':email' => strtolower($email)]);
+            if ($stmt->fetchColumn()) {
+                throw new InvalidArgumentException('E-mail já cadastrado.');
+            }
+
+            $stmt = $conexao->prepare(
+                'SELECT id FROM usuario WHERE matricula = :matricula LIMIT 1'
+            );
+            $stmt->execute([':matricula' => $matriculaNumerica]);
+            if ($stmt->fetchColumn()) {
+                throw new InvalidArgumentException('Já existe um usuário cadastrado com essa matrícula.');
+            }
+
             $conexao->beginTransaction();
 
             $stmt = $conexao->prepare(
@@ -61,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':nome' => $nome,
                 ':email' => strtolower($email),
                 ':senha' => $senha,
-                ':matricula' => (int) $matricula
+                ':matricula' => $matriculaNumerica
             ]);
 
             $novo_usuario_id = (int) $conexao->lastInsertId();
@@ -90,13 +112,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: index.php');
             exit;
 
+        } catch (InvalidArgumentException $ex) {
+            $erros[] = $ex->getMessage();
         } catch (PDOException $ex) {
             if ($conexao->inTransaction()) {
                 $conexao->rollBack();
             }
 
             $erros[] = $ex->getCode() === '23000'
-                ? 'E-mail já cadastrado.'
+                ? 'E-mail ou matrícula já cadastrados.'
                 : 'Erro ao salvar o cadastro.';
         }
     }
