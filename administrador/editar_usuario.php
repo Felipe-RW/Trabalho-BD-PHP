@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/../includes/conexao.php';
+require_once __DIR__ . '/../includes/criar_acao_log.php';
 
 $db = $conexao ?? $pdo;
 
@@ -36,27 +37,27 @@ $csrf = $_SESSION['csrf_usuarios'];
 $erro = '';
 $mensagem = $_SESSION['mensagem_usuario'] ?? '';
 unset($_SESSION['mensagem_usuario']);
-$pagina = ($_GET['pagina'] ?? '') === 'cadastrar' ? 'cadastrar' : 'listar';
 $dados = ['nome' => '', 'email' => '', 'matricula' => ''];
-$cargoSelecionado = '';
 $usuarioEdicao = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $acao = is_string($_POST['acao'] ?? null) ? $_POST['acao'] : '';
     $id = filter_var($_POST['id'] ?? '', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
-    $pagina = $acao === 'cadastrar' ? 'cadastrar' : 'listar';
 
     foreach ($dados as $campo => $valor) {
         $dados[$campo] = is_string($_POST[$campo] ?? null) ? trim($_POST[$campo]) : '';
     }
-    $cargoSelecionado = filter_var($_POST['cargo_id'] ?? '', FILTER_VALIDATE_INT);
 
     if (!is_string($_POST['csrf'] ?? null) || !hash_equals($csrf, $_POST['csrf'])) {
         $erro = 'Solicitação inválida. Recarregue a página.';
-    } elseif (!in_array($acao, ['cadastrar', 'editar', 'desativar', 'ativar'], true)) {
+    } elseif (!in_array($acao, ['editar', 'desativar', 'ativar'], true)) {
         $erro = 'Operação inválida.';
     } else {
         try {
+            if (in_array($acao, ['editar', 'desativar', 'ativar'], true) && (int) $id === 1) {
+                throw new InvalidArgumentException('O administrador do sistema (ID 1) não pode ser alterado.');
+            }
+
             if ($acao === 'desativar') {
                 if (!$id) {
                     throw new InvalidArgumentException('Usuário inválido.');
@@ -71,30 +72,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     throw new InvalidArgumentException('Usuário não encontrado.');
                 }
 
+                $db->beginTransaction();
                 $consulta = $db->prepare('UPDATE usuario SET ativo = 0 WHERE id = ? AND ativo = 1');
                 $consulta->execute([$id]);
-                $mensagem = $consulta->rowCount() ? 'Usuário desativado.' : 'O usuário já estava inativo.';
+                if ($consulta->rowCount()) {
+                    criarAcaoLog($db, 'Desativar', 'usuario', (int) $id, (int) $adminId);
+                    $mensagem = 'Usuário desativado.';
+                } else {
+                    $mensagem = 'O usuário já estava inativo.';
+                }
+                $db->commit();
             } elseif ($acao === 'ativar') {
                 if (!$id) {
                     throw new InvalidArgumentException('Usuário inválido.');
                 }
 
+                $db->beginTransaction();
                 $consulta = $db->prepare('UPDATE usuario SET ativo = 1 WHERE id = ? AND ativo = 0');
                 $consulta->execute([$id]);
-                $mensagem = $consulta->rowCount() ? 'Usuário ativado.' : 'O usuário já estava ativo ou não foi encontrado.';
-            } else {
-                if ($acao === 'editar') {
-                    if (!$id) {
-                        throw new InvalidArgumentException('Usuário inválido.');
-                    }
-                    $consulta = $db->prepare('SELECT id, nome, email, matricula, ativo FROM usuario WHERE id = ?');
-                    $consulta->execute([$id]);
-                    $usuarioEdicao = $consulta->fetch(PDO::FETCH_ASSOC);
-                    if (!$usuarioEdicao) {
-                        throw new InvalidArgumentException('Usuário não encontrado.');
-                    }
-                    $usuarioEdicao = array_merge($usuarioEdicao, $dados);
+                if ($consulta->rowCount()) {
+                    criarAcaoLog($db, 'Ativar', 'usuario', (int) $id, (int) $adminId);
+                    $mensagem = 'Usuário ativado.';
+                } else {
+                    $mensagem = 'O usuário já estava ativo ou não foi encontrado.';
                 }
+                $db->commit();
+            } else {
+                if (!$id) {
+                    throw new InvalidArgumentException('Usuário inválido.');
+                }
+                $consulta = $db->prepare('SELECT id, nome, email, matricula, ativo FROM usuario WHERE id = ?');
+                $consulta->execute([$id]);
+                $usuarioEdicao = $consulta->fetch(PDO::FETCH_ASSOC);
+                if (!$usuarioEdicao) {
+                    throw new InvalidArgumentException('Usuário não encontrado.');
+                }
+                $usuarioEdicao = array_merge($usuarioEdicao, $dados);
 
                 $matricula = filter_var($dados['matricula'], FILTER_VALIDATE_INT, [
                     'options' => ['min_range' => 1, 'max_range' => 2147483647],
@@ -110,39 +123,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $consulta = $db->prepare(
                     'SELECT id FROM usuario WHERE (email = ? OR matricula = ?) AND id <> ?'
                 );
-                $consulta->execute([$dados['email'], $matricula, $acao === 'editar' ? $id : 0]);
+                $consulta->execute([$dados['email'], $matricula, $id]);
                 if ($consulta->fetchColumn()) {
                     throw new InvalidArgumentException('E-mail ou matrícula já utilizado por outro usuário.');
                 }
 
-                if ($acao === 'cadastrar') {
-                    $senha = is_string($_POST['senha'] ?? null) ? $_POST['senha'] : '';
-                    $consulta = $db->prepare('SELECT id FROM cargo WHERE id = ?');
-                    $consulta->execute([$cargoSelecionado]);
-                    if ($senha === '' || strlen($senha) > 50 || !$consulta->fetchColumn()) {
-                        throw new InvalidArgumentException('Informe uma senha de até 50 caracteres e selecione um cargo.');
-                    }
-
-                    $db->beginTransaction();
-                    $consulta = $db->prepare(
-                        'INSERT INTO usuario (nome, email, senha, matricula) VALUES (?, ?, ?, ?)'
-                    );
-                    $consulta->execute([$dados['nome'], $dados['email'], $senha, $matricula]);
-                    $novoId = $db->lastInsertId();
-
-                    $consulta = $db->prepare(
-                        'INSERT INTO usuario_cargo (usuario_id, cargo_id) VALUES (?, ?)'
-                    );
-                    $consulta->execute([$novoId, $cargoSelecionado]);
-                    $db->commit();
-                    $mensagem = 'Usuário cadastrado.';
-                } else {
-                    $consulta = $db->prepare(
-                        'UPDATE usuario SET nome = ?, email = ?, matricula = ? WHERE id = ?'
-                    );
-                    $consulta->execute([$dados['nome'], $dados['email'], $matricula, $id]);
-                    $mensagem = 'Usuário atualizado.';
-                }
+                $db->beginTransaction();
+                $consulta = $db->prepare(
+                    'UPDATE usuario SET nome = ?, email = ?, matricula = ? WHERE id = ?'
+                );
+                $consulta->execute([$dados['nome'], $dados['email'], $matricula, $id]);
+                criarAcaoLog($db, 'Edição', 'usuario', (int) $id, (int) $adminId);
+                $db->commit();
+                $mensagem = 'Usuário atualizado.';
             }
 
             $_SESSION['mensagem_usuario'] = $mensagem;
@@ -160,17 +153,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 } elseif (isset($_GET['editar'])) {
     $id = filter_var($_GET['editar'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
-    if ($id) {
+    if ($id === 1) {
+        $erro = 'O administrador do sistema (ID 1) não pode ser alterado.';
+    } elseif ($id) {
         $consulta = $db->prepare('SELECT id, nome, email, matricula, ativo FROM usuario WHERE id = ?');
         $consulta->execute([$id]);
         $usuarioEdicao = $consulta->fetch(PDO::FETCH_ASSOC);
     }
-    if (!$usuarioEdicao) {
+    if (!$usuarioEdicao && $id !== 1) {
         $erro = 'Usuário não encontrado.';
     }
 }
 
-$cargos = $db->query('SELECT id, titulo FROM cargo ORDER BY titulo')->fetchAll(PDO::FETCH_ASSOC);
 $busca = is_string($_GET['busca'] ?? null) ? trim($_GET['busca']) : '';
 $consulta = $db->prepare(
     'SELECT u.id, u.nome, u.email, u.matricula, u.ativo
@@ -194,15 +188,13 @@ $classeBody = 'pagina-usuarios';
         <p class="sucesso" role="status"><?= escapar($mensagem) ?></p>
     <?php endif; ?>
 
-    <?php if ($pagina === 'cadastrar' || $usuarioEdicao): ?>
+    <?php if ($usuarioEdicao): ?>
         <section>
-            <h2><?= $usuarioEdicao ? 'Editar usuário' : 'Cadastrar usuário' ?></h2>
+            <h2>Editar usuário</h2>
             <form method="post" action="editar_usuario.php" class="campos">
                 <input type="hidden" name="csrf" value="<?= escapar($csrf) ?>">
-                <input type="hidden" name="acao" value="<?= $usuarioEdicao ? 'editar' : 'cadastrar' ?>">
-                <?php if ($usuarioEdicao): ?>
-                    <input type="hidden" name="id" value="<?= (int) $usuarioEdicao['id'] ?>">
-                <?php endif; ?>
+                <input type="hidden" name="acao" value="editar">
+                <input type="hidden" name="id" value="<?= (int) $usuarioEdicao['id'] ?>">
 
                 <label for="nome">Nome</label>
                 <input id="nome" name="nome" maxlength="100" required value="<?= escapar($formulario['nome']) ?>">
@@ -211,22 +203,8 @@ $classeBody = 'pagina-usuarios';
                 <label for="matricula">Matrícula</label>
                 <input id="matricula" name="matricula" type="number" min="1" max="2147483647" required value="<?= escapar($formulario['matricula']) ?>">
 
-                <?php if (!$usuarioEdicao): ?>
-                    <label for="senha">Senha</label>
-                    <input id="senha" name="senha" type="password" maxlength="50" autocomplete="new-password" required>
-                    <label for="cargo">Cargo</label>
-                    <select id="cargo" name="cargo_id" required>
-                        <option value="">Selecione</option>
-                        <?php foreach ($cargos as $cargo): ?>
-                            <option value="<?= (int) $cargo['id'] ?>" <?= (int) $cargoSelecionado === (int) $cargo['id'] ? 'selected' : '' ?>>
-                                <?= escapar($cargo['titulo']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                <?php endif; ?>
-
                 <div class="acoes">
-                    <button type="submit">Salvar usuário</button>
+                    <button type="submit">Salvar alterações</button>
                     <a class="btn-limpar-busca" href="editar_usuario.php">Cancelar</a>
                 </div>
             </form>
@@ -263,10 +241,12 @@ $classeBody = 'pagina-usuarios';
                             <td><?= $usuario['ativo'] ? 'Ativo' : 'Inativo' ?></td>
                             <td>
                                 <div class="acoes">
-                                    <?php if ((int) $usuario['id'] !== (int) $adminId): ?>
+                                    <?php if ((int) $usuario['id'] !== 1): ?>
                                         <a class="btn-editar-usuario" href="?editar=<?= (int) $usuario['id'] ?>">
                                             Editar<span class="sr-only"> <?= escapar($usuario['nome']) ?></span>
                                         </a>
+                                    <?php endif; ?>
+                                    <?php if ((int) $usuario['id'] !== 1 && (int) $usuario['id'] !== (int) $adminId): ?>
                                         <div class="acoes-status">
                                             <form method="post" action="editar_usuario.php" <?= $usuario['ativo'] ? 'onsubmit="return confirm(\'Desativar este usuário? Ele não poderá mais acessar o sistema.\');"' : '' ?>>
                                                 <input type="hidden" name="csrf" value="<?= escapar($csrf) ?>">
