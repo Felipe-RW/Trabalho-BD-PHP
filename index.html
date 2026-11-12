@@ -17,6 +17,10 @@
                 <h1>Bem-vindo!</h1>
                 <br><p>Preencha as informações para efetutar o login:</p><br>
 
+                <div id="mensagem-login" class="mensagem-erro-login" role="alert" hidden>
+                    E-mail ou senha incorretos, ou usuário desativado.
+                </div>
+
                 <form class="formulario_login" action="includes/autenticacao_cargo.php" method="POST">
 
                     <div class="campo_email">
@@ -36,6 +40,13 @@
             </div>
         </div>
     </main>
+    <script>
+        const parametros = new URLSearchParams(window.location.search);
+        if (parametros.get('erro') === 'login') {
+            document.getElementById('mensagem-login').hidden = false;
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    </script>
     <footer>
         <p>Projeto de Banco de Dados</p>
     </footer>
