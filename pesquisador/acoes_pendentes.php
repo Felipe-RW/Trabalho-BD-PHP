@@ -45,7 +45,6 @@ $acoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <h2 class="tabela_gap">Área do pesquisador</h2>
                     <h2 class="tabela_gap">Minhas Ações</h2>
                     <p>Acompanhe a situação das suas ações aqui.</p>
-                    <a class="btn btn-acoes" href="index.php">Voltar</a>
                 </section>
             </div>
 
@@ -92,7 +91,7 @@ $acoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                                             <?php elseif ($acao['status_acao'] === 'Negado'): ?>
 
-                                                <?= htmlspecialchars($acao['motivo']) ?>
+                                                <span class="motivo-rejeicao"><?= htmlspecialchars(trim((string) ($acao['motivo'] ?? '')), ENT_QUOTES, 'UTF-8') ?></span>
 
                                             <?php else: ?>
 
@@ -128,6 +127,11 @@ $acoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </table>
                 </div>
             </section>
+            <div class="voltar-minhas-acoes">
+                <a class="btn-voltar-minhas-acoes" href="index.php">
+                    <span aria-hidden="true">←</span> Voltar ao painel
+                </a>
+            </div>
         </div>
     </main>
 </body>

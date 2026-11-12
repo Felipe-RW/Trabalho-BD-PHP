@@ -371,12 +371,6 @@ input, select, textarea {
     margin-bottom: 30px;
 }
 
-.btn-acoes {
-    position: fixed;
-    top: 190px;
-    right: 620px;
-}
-
 @media (max-width: 600px) {
     .conteudo {
         width: 100%;
@@ -742,6 +736,43 @@ main.conteudo {
     padding: 10px 8px;
     font-size: 14px;
     overflow-wrap: break-word;
+}
+
+.pagina-minhas-acoes .motivo-rejeicao {
+    display: block;
+    max-width: 100%;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    line-height: 1.5;
+}
+
+.pagina-minhas-acoes .voltar-minhas-acoes {
+    margin-top: 16px;
+}
+
+.pagina-minhas-acoes .btn-voltar-minhas-acoes {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: 1px solid #c9c9c9;
+    border-radius: 6px;
+    background: #DEDEDE;
+    color: #222;
+    font-weight: 400;
+    text-align: center;
+    text-decoration: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+    transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.pagina-minhas-acoes .btn-voltar-minhas-acoes:hover {
+    border-color: #bdbdbd;
+    background: #c9c9c9;
+    color: #222;
+    box-shadow: 0 4px 9px rgba(0, 0, 0, 0.16);
+    transform: translateY(-1px);
 }
 
 .tabela_pesquisador_acoes {
