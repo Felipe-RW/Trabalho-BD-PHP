@@ -180,6 +180,7 @@ $urlPagina = static function (int $numero) use ($filtrosAtivos): string {
 };
 ?>
 
+<?php $classeBody = 'pagina-log-comite'; ?>
 <?php include __DIR__ . '/../includes/header.php'; ?>
     <section class="pagina-log">
 
@@ -266,7 +267,7 @@ $urlPagina = static function (int $numero) use ($filtrosAtivos): string {
 
             </form>
 
-            <br><div class="log-resumo" aria-live="polite">
+            <div class="log-resumo" aria-live="polite">
 
                 <span><?= number_format($total, 0, ',', '.') ?> registro(s) encontrado(s)</span>
 

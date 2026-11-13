@@ -27,11 +27,12 @@ if ($usuario_id > 0) {
 }
 $acao_cadastrada = !empty($_SESSION['acao_cadastrada']);
 unset($_SESSION['acao_cadastrada']);
+$classeBody = 'pagina-pesquisador-inicio';
 ?>
 
 <?php include __DIR__ . '/../includes/header.php'; ?>
 
-    <main class="conteudo pagina-inicial-pesquisador">
+    <section class="pagina-inicial-pesquisador">
 
         <div class="painel-pesquisador">
             <?php if ($acao_cadastrada): ?>
@@ -43,11 +44,9 @@ unset($_SESSION['acao_cadastrada']);
                     <a class="btn-criar-acao" href="enviar_acao.php">Criar nova ação</a>
                 </div>
                 <section class="boas-vindas">
-                    <h2>Área do pesquisador</h2>
-
+                    <p class="etiqueta-pesquisador">Área do pesquisador</p>
                     <h2>Bem-vindo!</h2>
-
-                    <p>Acompanhe suas ações e solicitações.</p>
+                    <p class="descricao-boas-vindas">Acompanhe suas ações, consulte atualizações e gerencie suas solicitações em um só lugar.</p>
                 </section>
             </div>
 
@@ -71,6 +70,6 @@ unset($_SESSION['acao_cadastrada']);
             </section>
         </div>
 
-    </main>
+    </section>
 
 <?php include __DIR__ . '/../includes/footer.php'; ?>

@@ -33,12 +33,12 @@ $stmt->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
 $stmt->execute();
 
 $acoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$classeBody = 'pagina-pesquisador-acoes';
 ?>
 
-<?php include '../includes/header.php'; ?>
+<?php include __DIR__ . '/../includes/header.php'; ?>
 
-<body>
-    <main class="conteudo pagina-minhas-acoes">
+    <section class="conteudo pagina-minhas-acoes">
         <div class="painel-pesquisador">
             <div class="cabecalho-pesquisador">
                 <section class="boas-vindas">
@@ -137,7 +137,5 @@ $acoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </a>
             </div>
         </div>
-    </main>
-</body>
-</html>
-<?php include '../includes/footer.php'; ?>
+    </section>
+<?php include __DIR__ . '/../includes/footer.php'; ?>

@@ -126,10 +126,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-<?php include '../includes/header.php'; ?>
+<?php
+$classeBody = 'pagina-cadastro-usuario';
+include __DIR__ . '/../includes/header.php';
+?>
 <section class="cadastro-usuario-pagina">
     <div class="cadastro-usuario-titulo">
         <h2>Cadastrar usuário</h2>
+        <p>Preencha os dados e selecione os cargos de acesso.</p>
     </div>
 
     <?php if ($erros): ?>

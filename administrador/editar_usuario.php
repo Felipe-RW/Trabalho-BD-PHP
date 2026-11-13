@@ -258,7 +258,7 @@ $termoBusca = '%' . $busca . '%';
 $consulta->execute([$termoBusca, $termoBusca, $termoBusca]);
 $usuarios = $consulta->fetchAll(PDO::FETCH_ASSOC);
 $formulario = $usuarioEdicao ?: $dados;
-$classeBody = 'pagina-usuarios';
+$classeBody = 'pagina-usuarios pagina-editar-usuario';
 ?>
 <?php include '../includes/header.php'; ?>
     <h1>Gerenciar usuários</h1>
@@ -373,8 +373,9 @@ $classeBody = 'pagina-usuarios';
                 </tbody>
             </table>
         </div>
+
+        <div class="acoes voltar-usuarios">
+            <a class="btn-voltar-usuarios" href="index.php"><span aria-hidden="true">←</span> Voltar ao painel</a>
+        </div>
     </section>
-    <div class="acoes voltar-usuarios">
-        <a class="btn-voltar-usuarios" href="index.php"><span aria-hidden="true">←</span> Voltar ao painel</a>
-    </div>
 <?php include '../includes/footer.php'; ?>

@@ -58,12 +58,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $categorias = $conexao->query('SELECT id, nome FROM categoria ORDER BY nome, id')
     ->fetchAll(PDO::FETCH_ASSOC);
 
-include '../includes/header.php';
+$classeBody = 'pagina-categoria';
+include __DIR__ . '/../includes/header.php';
 ?>
 
 <section class="categoria-pagina">
     <div class="categoria-titulo">
         <h2>Cadastrar categoria</h2>
+        <p>Adicione categorias para organizar as ações do sistema.</p>
     </div>
 
     <?php if (isset($_GET['sucesso'])): ?>
