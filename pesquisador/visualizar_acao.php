@@ -33,10 +33,12 @@ if ($id) {
 if (!$acao) {
     http_response_code($id ? 404 : 400);
 }
+
+$classeBody = 'pagina-pesquisador-acoes';
 ?>
 <?php require '../includes/header.php'; ?>
 
-<section class="conteudo pagina-minhas-acoes">
+<section class="conteudo pagina-minhas-acoes painel-visualizar-acao">
     <div class="painel-pesquisador">
         <div class="cabecalho-pesquisador">
             <section class="boas-vindas">
