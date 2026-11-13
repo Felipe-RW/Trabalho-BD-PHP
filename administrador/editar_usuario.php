@@ -305,7 +305,7 @@ $classeBody = 'pagina-usuarios';
                         <?php endforeach; ?>
                     </fieldset>
                 <?php else: ?>
-                    <p>Seus cargos não podem ser alterados por esta tela.</p>
+                    <p>Você não pode editar seus próprios cargos.</p>
                 <?php endif; ?>
 
                 <div class="acoes">
@@ -346,10 +346,7 @@ $classeBody = 'pagina-usuarios';
                             <td><?= $usuario['ativo'] ? 'Ativo' : 'Inativo' ?></td>
                             <td>
                                 <div class="acoes">
-                                    <?php if (
-                                        (int) $usuario['id'] !== 1 &&
-                                        (int) $usuario['id'] !== (int) $adminId
-                                    ): ?>
+                                    <?php if ((int) $usuario['id'] !== 1): ?>
                                         <a class="btn-editar-usuario" href="?editar=<?= (int) $usuario['id'] ?>">
                                             Editar<span class="sr-only"> <?= escapar($usuario['nome']) ?></span>
                                         </a>
