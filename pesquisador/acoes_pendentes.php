@@ -102,6 +102,10 @@ $acoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                                         <td>
                                             <?php if ($acao['status_acao'] === 'Aprovado'): ?>
+                                                <a class="btn btn-editar"
+                                                href="visualizar_acao.php?id=<?= (int)$acao['id'] ?>">
+                                                    Visualizar
+                                                </a>
                                                 <button class="btn btn-editar" disabled>
                                                     Editar
                                                 </button>
