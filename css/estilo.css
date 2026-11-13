@@ -148,6 +148,22 @@ main {
     .login_texto {
         padding: 24px;
     }
+
+    header {
+        padding: 14px 18px;
+    }
+
+    nav {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+    }
+
+    nav a {
+        margin-left: 0;
+    }
 }
 
 footer {
@@ -232,6 +248,12 @@ th, td {
 }
 
 th { background: #e6edf7; }
+
+.descricao-acao {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
 
 form {
     background: #fff;
@@ -354,10 +376,21 @@ input, select, textarea {
 
 .categoria-acoes {
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
     gap: 12px;
     flex-wrap: wrap;
+    width: 100%;
+    margin-top: 28px;
+    padding-top: 12px;
+}
+
+.categoria-acoes .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    margin: 0;
 }
 
 @media (max-width: 600px) {
@@ -371,6 +404,15 @@ input, select, textarea {
 
     .pagina-categoria main {
         padding: 24px 14px;
+    }
+
+    .categoria-acoes {
+        flex-direction: column;
+        justify-content: stretch;
+    }
+
+    .categoria-acoes .btn {
+        width: 100%;
     }
 }
 
@@ -387,7 +429,9 @@ input, select, textarea {
         url("../imagens/fundo_login.jpg") center / cover no-repeat;
 }
 
-.criar-acao-painel {
+.criar-acao-painel,
+.cadastro-acao-pagina,
+.enviar_acao_painel {
     display: flex;
     width: 100%;
     max-width: 900px;
@@ -430,7 +474,9 @@ input, select, textarea {
     text-align: center;
 }
 
-.pagina-criar-acao .formulario-criar-acao {
+.pagina-criar-acao .formulario-criar-acao,
+.cadastro-acao-pagina form,
+.enviar_acao_painel form {
     width: 100%;
     max-width: 680px;
     margin: 0 auto;
@@ -593,6 +639,15 @@ input, select, textarea {
     height: 100%;
     padding: 40px;
     min-height: 400px;
+}
+
+.mensagem-erro-login {
+    margin-bottom: 16px;
+    padding: 16px;
+    border-radius: 4px;
+    color: #333;
+    background: #e4e4e4;
+    border-left: 4px solid #777;
 }
 
 .btn_login {
@@ -1050,19 +1105,43 @@ input, select, textarea {
     }
 }
 
-.acoes-formulario {
+.acoes-formulario,
+.btn-acoes {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: 12px;
 }
 
-.acoes-formulario .btn {
+.acoes-formulario .btn,
+.btn-acoes .btn,
+.btn-acoes a {
     min-width: 100px;
     text-align: center;
 }
 
-.enviar_acao_painel textarea {
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 180px;
+    padding: 24px;
+    background: #fff;
+    border: 1px solid #dfe6e2;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(31, 58, 95, 0.08);
+}
+
+.enviar_acao_painel textarea,
+.cadastro-acao-pagina textarea,
+.criar-acao-painel textarea {
     min-height: 150px;
     resize: vertical;
 }
@@ -1229,6 +1308,43 @@ main.conteudo {
     overflow-wrap: break-word;
 }
 
+.pagina-minhas-acoes .motivo-rejeicao {
+    display: block;
+    max-width: 100%;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    line-height: 1.5;
+}
+
+.pagina-minhas-acoes .voltar-minhas-acoes {
+    margin-top: 16px;
+}
+
+.pagina-minhas-acoes .btn-voltar-minhas-acoes {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: 1px solid #c9c9c9;
+    border-radius: 6px;
+    background: #DEDEDE;
+    color: #222;
+    font-weight: 400;
+    text-align: center;
+    text-decoration: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+    transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.pagina-minhas-acoes .btn-voltar-minhas-acoes:hover {
+    border-color: #bdbdbd;
+    background: #c9c9c9;
+    color: #222;
+    box-shadow: 0 4px 9px rgba(0, 0, 0, 0.16);
+    transform: translateY(-1px);
+}
+
 .tabela_pesquisador_acoes {
     width: 100%;
     overflow-x: visible;
@@ -1339,6 +1455,28 @@ main.conteudo {
     color: #333;
     background: #f1f1f1;
 }
+
+.pagina-editar-usuario main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: none;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 0;
+    padding: 32px 24px 48px;
+    background:
+        linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+        url("../imagens/fundo_login.jpg") center / cover no-repeat;
+}
+
+.pagina-usuarios.pagina-editar-usuario main {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 32px 24px 48px;
+}
+
 .pagina-usuarios main {
     width: 100%;
     max-width: 1152px;
@@ -1348,6 +1486,10 @@ main.conteudo {
 }
 
 .pagina-usuarios main > h1 { margin-bottom: 24px; font-size: 28px; }
+.pagina-editar-usuario main > h1 {
+    color: #fff;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+}
 .pagina-usuarios h2 { margin: 0 0 20px; font-size: 21px; }
 .pagina-usuarios main a { color: #444; text-underline-offset: 3px; }
 
@@ -1361,10 +1503,24 @@ main.conteudo {
     gap: 12px;
 }
 
+.pagina-usuarios .acoes {
+    justify-content: center;
+}
+
 .pagina-usuarios .acoes-status { flex-wrap: nowrap; gap: 8px; margin-left: 0; }
-.pagina-usuarios td .acoes { justify-content: center; flex-wrap: nowrap; column-gap: 24px; }
+.pagina-usuarios td .acoes { justify-content: center; flex-wrap: nowrap; column-gap: 12px; }
 .pagina-usuarios main nav { margin-bottom: 24px; }
 .pagina-usuarios main nav a { margin: 0; }
+
+.pagina-usuarios .acoes-status button,
+.pagina-usuarios .btn-editar-usuario,
+.pagina-usuarios .perigo,
+.pagina-usuarios .ativar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
 .pagina-usuarios section { margin-bottom: 24px; padding: 24px; border: 1px solid var(--cinza-borda); border-radius: 8px; background: #fafafa; }
 
 .pagina-usuarios form {
@@ -1416,23 +1572,28 @@ main.conteudo {
 .pagina-usuarios .btn-limpar-busca:hover { background: var(--cinza-hover); }
 
 .pagina-usuarios .btn-editar-usuario {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     min-width: 112px;
+    min-height: 42px;
     padding: 10px 12px;
-    border: 1px solid #c9c9c9;
-    border-radius: 4px;
-    background: #DEDEDE;
-    color: #222;
-    font-weight: 400;
+    border: 1px solid #1f3a5f;
+    border-radius: 6px;
+    background: #1f3a5f;
+    color: #fff;
+    font-weight: 600;
     text-align: center;
     text-decoration: none;
-    transition: background-color 160ms ease, transform 160ms ease;
+    transition: background-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+    box-shadow: 0 2px 6px rgba(31, 58, 95, 0.18);
 }
 .pagina-usuarios .btn-editar-usuario:hover {
-    border-color: #bdbdbd;
-    background: #c9c9c9;
-    color: #222;
+    border-color: #2c527f;
+    background: #2c527f;
+    color: #fff;
     transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(31, 58, 95, 0.22);
 }
 .pagina-usuarios .voltar-usuarios { margin-top: 16px; }
 .pagina-usuarios .btn-voltar-usuarios {
@@ -1457,25 +1618,43 @@ main.conteudo {
     box-shadow: 0 4px 9px rgba(0, 0, 0, 0.16);
     transform: translateY(-1px);
 }
-.pagina-usuarios .acoes-status button { min-width: 112px; }
+.pagina-usuarios .acoes-status button {
+    min-width: 112px;
+    min-height: 42px;
+    padding: 10px 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
 .pagina-usuarios button:hover { background: var(--cinza-hover); }
 .pagina-usuarios .perigo {
-    border-color: #a32415;
-    background: #a32415;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 112px;
+    min-height: 42px;
+    border-color: #b3261e;
+    background: #b3261e;
     color: #fff;
     font-weight: 600;
 }
-.pagina-usuarios .perigo:hover { border-color: #962d22; background: #962d22; }
+.pagina-usuarios .perigo:hover { border-color: #8f1e18; background: #8f1e18; }
 .pagina-usuarios .ativar {
-    border-color: #198754;
-    background: #198754;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 112px;
+    min-height: 42px;
+    border-color: #2e7d32;
+    background: #2e7d32;
     color: #fff;
     font-weight: 600;
     transition: background-color 160ms ease, transform 160ms ease;
 }
 .pagina-usuarios .ativar:hover {
-    border-color: #1f9c62;
-    background: #1f9c62;
+    border-color: #236628;
+    background: #236628;
     transform: translateY(-1px);
 }
 .pagina-usuarios button:disabled,
@@ -1524,92 +1703,39 @@ main.conteudo {
     .pagina-usuarios td { padding: 8px; }
 }
 
-.pagina-editar-usuario main {
-    width: 100%;
-    max-width: none;
+.pagina-usuarios fieldset {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px 20px;
+    margin-top: 12px;
+    padding: 16px;
+    border: 1px solid #c9c9c9;
+    border-radius: 6px;
+}
+
+.pagina-usuarios fieldset legend {
+    padding: 0 6px;
+    font-weight: bold;
+}
+
+.pagina-usuarios .cargo-opcao {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     margin: 0;
-    padding: 32px 24px 48px;
-    background:
-        linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-        url("../imagens/fundo_login.jpg") center / cover no-repeat;
+    font-weight: normal;
+    cursor: pointer;
 }
 
-.pagina-editar-usuario main > * {
-    width: 100%;
-    max-width: 1100px;
-    margin-right: auto;
-    margin-left: auto;
+.pagina-usuarios .cargo-opcao input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
 }
 
-.pagina-editar-usuario main > h1 {
-    margin-bottom: 24px;
-    color: #fff;
-    font-size: 30px;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
-}
-
-.pagina-editar-usuario main > section {
-    border-color: rgba(255, 255, 255, 0.75);
-    background: rgba(255, 255, 255, 0.97);
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
-}
-
-.pagina-editar-usuario section h2 {
-    margin-bottom: 16px;
-    color: #1f3a5f;
-}
-
-.pagina-editar-usuario .busca {
-    gap: 10px 12px;
-}
-
-.pagina-editar-usuario .tabela table {
-    min-width: 820px;
-}
-
-.pagina-editar-usuario tbody tr:hover {
-    background: #f7f9fc;
-}
-
-@media (max-width: 600px) {
-    .pagina-editar-usuario main {
-        padding: 24px 14px 32px;
-    }
-
-    .pagina-editar-usuario main > h1 {
-        font-size: 25px;
-    }
-
-    .pagina-editar-usuario .tabela table {
-        min-width: 760px;
-    }
-}
-
-@media (max-width: 600px) {
-    .pagina-pesquisador-acoes main {
-        padding: 22px 14px;
-    }
-
-    .pagina-pesquisador-acoes .pagina-minhas-acoes .painel-pesquisador {
-        padding: 20px 14px;
-    }
-
-    .pagina-pesquisador-acoes .pagina-minhas-acoes .tabela_pesquisador_acoes table {
-        min-width: 800px;
-    }
-
-    .pagina-pesquisador-inicio .boas-vindas h2,
-    .pagina-pesquisador-acoes .boas-vindas h2 {
-        font-size: 26px;
-    }
-
-    .pagina-pesquisador-inicio .boas-vindas,
-    .pagina-pesquisador-acoes .boas-vindas {
-        padding: 12px 4px 8px;
-    }
-
-    .pagina-pesquisador-acoes .btn-acoes {
-        position: static;
-        margin-top: 12px;
-    }
+.pagina-usuarios .cargo-opcao span {
+    overflow-wrap: anywhere;
 }

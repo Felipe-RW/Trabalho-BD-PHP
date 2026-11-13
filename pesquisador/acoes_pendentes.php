@@ -42,10 +42,9 @@ $classeBody = 'pagina-pesquisador-acoes';
         <div class="painel-pesquisador">
             <div class="cabecalho-pesquisador">
                 <section class="boas-vindas">
-                    <p class="etiqueta-pesquisador">Área do pesquisador</p>
-                    <h2 class="tabela_gap">Minhas ações</h2>
-                    <p class="descricao-boas-vindas">Consulte o andamento das ações que você enviou e veja os detalhes de cada avaliação.</p>
-                    <a class="btn btn-acoes" href="index.php">Voltar</a>
+                    <h2 class="tabela_gap">Área do pesquisador</h2>
+                    <h2 class="tabela_gap">Minhas Ações</h2>
+                    <p>Acompanhe a situação das suas ações aqui.</p>
                 </section>
             </div>
 
@@ -92,7 +91,7 @@ $classeBody = 'pagina-pesquisador-acoes';
 
                                             <?php elseif ($acao['status_acao'] === 'Negado'): ?>
 
-                                                <?= htmlspecialchars($acao['motivo']) ?>
+                                                <span class="motivo-rejeicao"><?= htmlspecialchars(trim((string) ($acao['motivo'] ?? '')), ENT_QUOTES, 'UTF-8') ?></span>
 
                                             <?php else: ?>
 
@@ -103,6 +102,10 @@ $classeBody = 'pagina-pesquisador-acoes';
 
                                         <td>
                                             <?php if ($acao['status_acao'] === 'Aprovado'): ?>
+                                                <a class="btn btn-editar"
+                                                href="visualizar_acao.php?id=<?= (int)$acao['id'] ?>">
+                                                    Visualizar
+                                                </a>
                                                 <button class="btn btn-editar" disabled>
                                                     Editar
                                                 </button>
@@ -128,6 +131,11 @@ $classeBody = 'pagina-pesquisador-acoes';
                     </table>
                 </div>
             </section>
+            <div class="voltar-minhas-acoes">
+                <a class="btn-voltar-minhas-acoes" href="index.php">
+                    <span aria-hidden="true">←</span> Voltar ao painel
+                </a>
+            </div>
         </div>
     </section>
 <?php include __DIR__ . '/../includes/footer.php'; ?>

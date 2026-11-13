@@ -43,7 +43,7 @@ $classeBody = 'pagina-validador';
 					<tr>
 						<td><?= (int) $acao['id'] ?></td>
 						<td><?= htmlspecialchars($acao['titulo'], ENT_QUOTES, 'UTF-8') ?></td>
-						<td><?= htmlspecialchars($acao['descricao'], ENT_QUOTES, 'UTF-8') ?></td>
+						<td class="descricao-acao"><?= htmlspecialchars($acao['descricao'], ENT_QUOTES, 'UTF-8') ?></td>
 						<td><?= htmlspecialchars($acao['data_de_realizacao'], ENT_QUOTES, 'UTF-8') ?></td>
 						<td><?= htmlspecialchars($acao['categoria'], ENT_QUOTES, 'UTF-8') ?></td>
 						<td><?= htmlspecialchars($acao['status_acao'], ENT_QUOTES, 'UTF-8') ?></td>
