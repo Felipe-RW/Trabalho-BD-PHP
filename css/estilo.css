@@ -994,3 +994,40 @@ main.conteudo {
     .pagina-usuarios th,
     .pagina-usuarios td { padding: 8px; }
 }
+
+.pagina-usuarios fieldset {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px 20px;
+    margin-top: 12px;
+    padding: 16px;
+    border: 1px solid #c9c9c9;
+    border-radius: 6px;
+}
+
+.pagina-usuarios fieldset legend {
+    padding: 0 6px;
+    font-weight: bold;
+}
+
+.pagina-usuarios .cargo-opcao {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.pagina-usuarios .cargo-opcao input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+.pagina-usuarios .cargo-opcao span {
+    overflow-wrap: anywhere;
+}
