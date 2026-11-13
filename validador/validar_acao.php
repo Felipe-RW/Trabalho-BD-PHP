@@ -155,7 +155,7 @@ $motivoAtual = $validacaoAtual->fetchColumn();
                 </tr>
                 <tr>
                     <th scope="row">Descrição</th>
-                    <td><?= nl2br(htmlspecialchars($acao['descricao'], ENT_QUOTES, 'UTF-8')) ?></td>
+                    <td class="descricao-acao"><?= nl2br(htmlspecialchars($acao['descricao'], ENT_QUOTES, 'UTF-8')) ?></td>
                 </tr>
                 <tr>
                     <th scope="row">Data de realização</th>

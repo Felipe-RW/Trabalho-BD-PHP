@@ -54,7 +54,7 @@ if (!$acao) {
                 <p><strong>Status:</strong> <?= htmlspecialchars($acao['status_acao'], ENT_QUOTES, 'UTF-8') ?></p>
                 <div>
                     <strong>Descrição:</strong>
-                    <p><?= nl2br(htmlspecialchars($acao['descricao'], ENT_QUOTES, 'UTF-8')) ?></p>
+                    <p class="descricao-acao"><?= nl2br(htmlspecialchars($acao['descricao'], ENT_QUOTES, 'UTF-8')) ?></p>
                 </div>
             </section>
         <?php endif; ?>
